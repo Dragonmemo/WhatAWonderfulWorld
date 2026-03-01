@@ -15,7 +15,7 @@ Run http-server -c-1 -p80 to start server on open port 80.
 // Network Settings
 // const serverIp      = 'https://yourservername.herokuapp.com';
 // const serverIp      = 'https://yourprojectname.glitch.me';
-const serverIp      = 'web-production-199f6.up.railway.app';
+const serverIp      = 'waww.up.railway.app';
 const serverPort    = '3000';
 const local         = false;   // true if running locally, false
                               // if running on remote server
@@ -25,7 +25,7 @@ const local         = false;   // true if running locally, false
 const LOADER = {
   Artifactory:
     [
-      "J'ai trouvé un artefact, c'est(DETERMINANT)[2|Donne un préfixe :|][1|Donne un objet (la première boite de texte est pour le déterminant, ex : le/la/les):|DETERMINANT][3|Donne un suffixe :|]qui[5|Donne un effet :|]quand[4|Donne une action :|]",
+      "J'ai trouvé un artefact, c'est(DETERMINANT)[2|Donne un adjectif qui précède un nom :|][1|Donne un objet (la première boite de texte est pour le déterminant, ex : le/la/les):|DETERMINANT][3|Donne un adjectif qui suit un nom :|]qui[5|Donne un effet (qui ...):|]quand[4|Donne une action (quand ...):|]",
       "J'ai trouvé un artefact, c'est[1|la][2|plus petite][1|chaise][3|bleue]qui[5|tire des rayons laser]quand[4|tu la croques]ARTISTE."
     ]
 };
@@ -412,15 +412,15 @@ class Game {
   add (id, x, y, w, h) {
     this.players[id] = createSprite(x, y, w, h);
     this.players[id].id = "p"+this.id;
-    this.players[id].setCollider("rectangle", 0, 0, w, h);
+    //this.players[id].setCollider("rectangle", 0, 0, w, h);
     this.players[id].color = color(255, 255, 255);
-    this.players[id].shapeColor = color(255, 255, 255);
-    this.players[id].scale = 1;
-    this.players[id].mass = 1;
+    //this.players[id].shapeColor = color(255, 255, 255);
+    //this.players[id].scale = 1;
+    //this.players[id].mass = 1;
     this.players[id].displayName = this.players[id].id;
     this.players[id].status=false;
     this.players[id].currentGame={};
-    this.colliders.add(this.players[id]);
+    //this.colliders.add(this.players[id]);
     print(this.players[id].id + " added.");
     this.id++;
     this.numPlayers++;
@@ -428,7 +428,7 @@ class Game {
 
   draw() {
     //this.checkBounds();
-    drawSprites();
+    //drawSprites();
   }
 
   setColor (id, r, g, b) {
