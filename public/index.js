@@ -18,7 +18,7 @@ Run http-server -c-1 -p80 to start server on open port 80.
 // const serverIp      = 'https://yourprojectname.glitch.me';
 const serverIp      = 'web-production-199f6.up.railway.app';
 const serverPort    = '3000';
-const local         = true;   // true if running locally, false
+const local         = false;   // true if running locally, false
                               // if running on remote server
 
 // Global variables here. ---->
