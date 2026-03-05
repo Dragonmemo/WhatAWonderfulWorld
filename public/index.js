@@ -1,17 +1,3 @@
-/*
-p5.multiplayer - CLIENT
-
-This 'client' sketch is intended to be run in either mobile or 
-desktop browsers. It sends a basic joystick and button input data 
-to a node server via socket.io. This data is then rerouted to a 
-'host' sketch, which displays all connected 'clients'.
-
-Navigate to the project's 'public' directory.
-Run http-server -c-1 to start server. This will default to port 8080.
-Run http-server -c-1 -p80 to start server on open port 80.
-
-*/
-
 ////////////
 // Network Settings
 // const serverIp      = 'https://yourservername.herokuapp.com';
@@ -31,9 +17,6 @@ let writeBox = null;
 let writeBox2 = null;
 let promptElement = null;
 
-let thisJ       = {x: 0, y: 0};
-let prevJ       = {x: 0, y: 0};
-
 // Initialize Game related variables
 let playerColor;
 let playerColorDim;
@@ -45,28 +28,11 @@ function preload() {
 }
 
 function setup() {
-  createCanvas(windowWidth, windowHeight);
-
-  // Client setup here. ---->
-  
-  gui = createGui();
+  createCanvas(windowWidth*0.5, windowHeight*0.2);
 
   setPlayerColors();
   setupUI();
   
-  // <----
-
-  // Send any initial setup data to your host here.
-  /* 
-    Example: 
-    sendData('myDataType', { 
-      val1: 0,
-      val2: 128,
-      val3: true
-    });
-
-     Use `type` to classify message types for host.
-  */
   sendData('playerColor', { 
     r: red(playerColor)/255,
     g: green(playerColor)/255,
@@ -128,7 +94,7 @@ function setPlayerColors() {
 
 function setupUI() {
   // Temp variables for calculating GUI object positions
-  let bX, bY, bW, bH;
+  /*let bX, bY, bW, bH;
   
   // Rudimentary calculation based on portrait or landscape 
   if (width < height) {
@@ -146,14 +112,10 @@ function setupUI() {
   
   // Create joystick and button, stylize with player colors
   
-  button = createButton("Ready ?", bX, bY, bW, bH);
-  button.setStyle({
-    textSize: 40,
-    fillBg: playerColorDim,
-    fillBgHover: playerColorDim,
-    fillBgActive: playerColor
-  });
-  button.onPress = onButtonPress;
+  button = createButton("Ready ?", bX, bY, bW, bH);*/
+  button= document.getElementById("BUTTON")
+  button.style="font-size:40px;background:"+playerColorDim+";";
+  button.onclick = onButtonPress;
   writeBox= document.getElementById("story");
   writeBox.addEventListener("input", onTextBoxChange);
   writeBox2= document.getElementById("adder");
@@ -172,14 +134,14 @@ function onButtonPress() {
       button: false
     }
     writeBox.removeAttribute("disabled");
-    button.label = "Ready ?";
+    button.innerHTML = "Ready ?";
   }
   else {
     data = {
       button: true
     }
     document.getElementById("story").setAttribute("disabled", "true");
-    button.label = "Not Ready ?";
+    button.innerHTML = "Not Ready ?";
   }
   sendData('button', data);
 
@@ -196,7 +158,7 @@ function onTextBoxChange(){
 }
 
 /// Add these lines below sketch to prevent scrolling on mobile
-function touchMoved() {
+/*function touchMoved() {
   // do some stuff
   return false;
-}
+}*/
