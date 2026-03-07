@@ -38,6 +38,13 @@ let gameState = -1;
 let prompteur=null
 let currentSelect='Artifactory';
 let indexPlayer=-1
+let backgroundMusicMain, backgroundMusicGame, backgroundMusicReview;
+//Music by <a href="https://pixabay.com/users/sonican-38947841/?utm_source=link-attribution&utm_medium=referral&utm_campaign=music&utm_content=441293">Dvir Silverstone</a> from <a href="https://pixabay.com//?utm_source=link-attribution&utm_medium=referral&utm_campaign=music&utm_content=441293">Pixabay</a>
+//Music by <a href="https://pixabay.com/users/echo-media-47609404/?utm_source=link-attribution&utm_medium=referral&utm_campaign=music&utm_content=295742">Echo-Media</a> from <a href="https://pixabay.com/music//?utm_source=link-attribution&utm_medium=referral&utm_campaign=music&utm_content=295742">Pixabay</a>
+//Music by <a href="https://pixabay.com/users/music_for_videos-26992513/?utm_source=link-attribution&utm_medium=referral&utm_campaign=music&utm_content=163377">Anastasia Chubarova</a> from <a href="https://pixabay.com//?utm_source=link-attribution&utm_medium=referral&utm_campaign=music&utm_content=163377">Pixabay</a>
+let soundEffWriting, soundEffNext;
+//Sound Effect by <a href="https://pixabay.com/users/freesound_community-46691455/?utm_source=link-attribution&utm_medium=referral&utm_campaign=music&utm_content=82822">freesound_community</a> from <a href="https://pixabay.com/sound-effects//?utm_source=link-attribution&utm_medium=referral&utm_campaign=music&utm_content=82822">Pixabay</a>
+//Sound Effect by <a href="https://pixabay.com/users/freesound_community-46691455/?utm_source=link-attribution&utm_medium=referral&utm_campaign=music&utm_content=84424">freesound_community</a> from <a href="https://pixabay.com//?utm_source=link-attribution&utm_medium=referral&utm_campaign=music&utm_content=84424">Pixabay</a>
 // <----
 
 function processScript(strKey){
@@ -56,6 +63,12 @@ function processScript(strKey){
 
 function preload() {
   setupHost();
+  soundFormats("mp3")
+  backgroundMusicMain=loadSound("/music/comedy-piano");
+  backgroundMusicGame=loadSound("/music/silly-escapade");
+  backgroundMusicReview=loadSound("/music/positive-world");
+  soundEffNext=loadSound("/music/ping");
+  soundEffWriting=loadSound("/music/pencil");
 }
 
 function setup () {
@@ -64,6 +77,15 @@ function setup () {
   // Host/Game setup here. ---->
   
   game = new Game(width, height);
+  
+  backgroundMusicMain.play();
+  backgroundMusicMain.loop();
+  backgroundMusicMain.setVolume(0.1);
+  backgroundMusicGame.setVolume(0.1);
+  backgroundMusicReview.setVolume(0.1);
+  soundEffNext.setVolume(0.1);
+  soundEffWriting.setVolume(0.1);
+  userStartAudio();
 
   button = createButton("Start", width/2-200, height-110, 400, 100);
     button.setStyle({
@@ -80,6 +102,11 @@ function reviewContinue(){
   indexPlayer++;
   if (indexPlayer>game.currentPlayers.length){
     gameState=-1
+	
+	backgroundMusicReview.stop();
+	backgroundMusicMain.play();
+	backgroundMusicMain.loop();
+	
     button.setStyle({
     textSize: 40,
     fillBg: color(130, 210, 100),
@@ -115,6 +142,11 @@ function onButtonHostPress() {
       n=parseInt(0,tempList.length);
       game.currentPlayers.push(tempList.splice(n,1)[0])
     }
+	
+	backgroundMusicMain.stop();
+	backgroundMusicGame.play();
+	backgroundMusicGame.loop();
+	
     button.onPress=null;
     button.label="In Game"
     button.setStyle({
@@ -322,6 +354,8 @@ function onReceiveData (data) {
   }
   else if (data.type === 'txtChange') {
     processTxt(data);
+	soundEffWriting.play();
+	soundEffWriting.setLoop(false);
   }
   else if (data.type === 'playerColor') {
     game.setColor(data.id, data.r*255, data.g*255, data.b*255);
@@ -362,6 +396,11 @@ function processButton (data) {
       else {
         gameState=-2
         indexPlayer=-1
+			
+		backgroundMusicGame.stop();
+		backgroundMusicReview.play();
+		backgroundMusicReview.loop();
+		
         button.onPress=reviewContinue;
 
         button.label="Next"
