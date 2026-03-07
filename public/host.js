@@ -88,7 +88,7 @@ function setup () {
   soundEffWriting.setVolume(0.7);
   userStartAudio();
 
-  button = createButton("Start", width/2-200, height-110, 400, 100);
+  button = createButton("Start", width-410, height-110, 400, 100);
     button.setStyle({
     textSize: 40,
     fillBg: color(130, 210, 100),
@@ -101,12 +101,18 @@ function setup () {
 
 function reviewContinue(){
   indexPlayer++;
-  if (indexPlayer>game.currentPlayers.length){
+  if (indexPlayer==game.currentPlayers.length){
     gameState=-1
 	
 	backgroundMusicReview.stop();
 	backgroundMusicMain.play();
 	backgroundMusicMain.loop();
+	
+	let data = {
+	  button: button.val,
+	  prompt: "Écrit ton nom :"
+	}        
+    sendData('buttonHost', data);
 	
     button.setStyle({
     textSize: 40,
@@ -503,7 +509,7 @@ class Game {
             fill(200);
             let charVal="[X] "
             if (this.players[id].status){
-              fill(255);
+              fill(this.players[id].color);
               charVal="[V] "
             }
               text(charVal+this.players[id].displayName, x, y);
