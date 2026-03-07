@@ -45,6 +45,7 @@ let backgroundMusicMain, backgroundMusicGame, backgroundMusicReview;
 let soundEffWriting, soundEffNext;
 //Sound Effect by <a href="https://pixabay.com/users/freesound_community-46691455/?utm_source=link-attribution&utm_medium=referral&utm_campaign=music&utm_content=82822">freesound_community</a> from <a href="https://pixabay.com/sound-effects//?utm_source=link-attribution&utm_medium=referral&utm_campaign=music&utm_content=82822">Pixabay</a>
 //Sound Effect by <a href="https://pixabay.com/users/freesound_community-46691455/?utm_source=link-attribution&utm_medium=referral&utm_campaign=music&utm_content=84424">freesound_community</a> from <a href="https://pixabay.com//?utm_source=link-attribution&utm_medium=referral&utm_campaign=music&utm_content=84424">Pixabay</a>
+let timeOutWriting=0;
 // <----
 
 function processScript(strKey){
@@ -83,8 +84,8 @@ function setup () {
   backgroundMusicMain.setVolume(0.1);
   backgroundMusicGame.setVolume(0.1);
   backgroundMusicReview.setVolume(0.1);
-  soundEffNext.setVolume(0.1);
-  soundEffWriting.setVolume(0.1);
+  soundEffNext.setVolume(0.3);
+  soundEffWriting.setVolume(0.7);
   userStartAudio();
 
   button = createButton("Start", width/2-200, height-110, 400, 100);
@@ -146,6 +147,9 @@ function onButtonHostPress() {
 	backgroundMusicMain.stop();
 	backgroundMusicGame.play();
 	backgroundMusicGame.loop();
+	
+	soundEffNext.play();
+	soundEffNext.setLoop(false);
 	
     button.onPress=null;
     button.label="In Game"
@@ -354,22 +358,16 @@ function onReceiveData (data) {
   }
   else if (data.type === 'txtChange') {
     processTxt(data);
-	soundEffWriting.play();
-	soundEffWriting.setLoop(false);
+	if (millis()-timeOutWriting>300){
+		soundEffWriting.play();
+		soundEffWriting.setLoop(false);
+		timeOutWriting=millis();
+	}
   }
   else if (data.type === 'playerColor') {
     game.setColor(data.id, data.r*255, data.g*255, data.b*255);
   }
 
-  // <----
-
-  /* Example:
-     if (data.type === 'myDataType') {
-       processMyData(data);
-     }
-
-     Use `data.type` to get the message type sent by client.
-  */
 }
 
 ////////////
@@ -384,6 +382,10 @@ function processButton (data) {
       if (!game.players[id].status){statusReady = false}}
     if (statusReady){
       gameState += 1;
+		  
+		soundEffNext.play();
+		soundEffNext.setLoop(false);
+
       if (prompteur[gameState]){
         let data = {
           button: button.val,
