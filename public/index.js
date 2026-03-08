@@ -121,7 +121,7 @@ function setupUI() {
   writeBox2= document.getElementById("adder");
   writeBox2.addEventListener("input", onTextBoxChange);
   promptElement =  document.getElementById("prompt");
-  promptElement.innerHTML="Écrit ton nom :";
+  promptElement.innerHTML="Écris ton nom :";
 }
 
 ////////////

@@ -121,7 +121,7 @@ function reviewContinue(){
 	
 	let data = {
 	  button: button.val,
-	  prompt: "Écrit ton nom :"
+	  prompt: "Écris ton nom :"
 	}        
     sendData('buttonHost', data);
 	
