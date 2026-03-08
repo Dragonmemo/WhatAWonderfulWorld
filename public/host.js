@@ -115,7 +115,7 @@ function reviewContinue(){
   if (indexPlayer==game.currentPlayers.length){
     gameState=-1
 	
-	backgroundMusicReview.stop();
+	backgroundMusicReview.stopAll();
 	backgroundMusicMain.play();
 	backgroundMusicMain.loop();
 	
@@ -186,7 +186,7 @@ function onButtonHostPress() {
       game.currentPlayers.push(tempList.splice(n,1)[0])
     }
 	
-	backgroundMusicMain.stop();
+	backgroundMusicMain.stopAll();
 	backgroundMusicGame.play();
 	backgroundMusicGame.loop();
 	
@@ -441,7 +441,7 @@ function processButton (data) {
         gameState=-2
         indexPlayer=-1
 			
-		backgroundMusicGame.stop();
+		backgroundMusicGame.stopAll();
 		backgroundMusicReview.play();
 		backgroundMusicReview.loop();
 		
