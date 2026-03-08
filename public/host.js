@@ -490,20 +490,39 @@ class Game {
     this.id         = 0;
     this.colliders	= new Group();
     this.currentPlayers=null;
+	this.tempPlayers={};
   }
 
   add (id, x, y, w, h) {
 	  //Faire ici une modif pour permettre aux gens de se reconnecter
-    this.players[id] = createSprite(x, y, w, h);
-    this.players[id].id = "p"+this.id;
-    this.players[id].color = color(255, 255, 255);
-    this.players[id].displayName = this.players[id].id;
-    this.players[id].status=false;
-	this.players[id].disconnected=false;
-    this.players[id].currentGame={};
-    print(this.players[id].id + " added.");
-    this.id++;
-    this.numPlayers++;
+	  if (gameState==-1){
+		this.players[id] = createSprite(x, y, w, h);
+		this.players[id].id = "p"+this.id;
+		this.players[id].color = color(255, 255, 255);
+		this.players[id].displayName = this.players[id].id;
+		this.players[id].status=false;
+		this.players[id].disconnected=false;
+		this.players[id].currentGame={};
+		print(this.players[id].id + " added.");
+		this.id++;
+		this.numPlayers++;
+	  }
+	  else{
+		this.TempPlayers[id] = createSprite(x, y, w, h);
+		this.TempPlayers[id].id = "p"+this.id;
+		this.TempPlayers[id].color = color(255, 255, 255);
+		this.TempPlayers[id].displayName = this.players[id].id;
+		this.TempPlayers[id].status=false;
+		this.TempPlayers[id].disconnected=false;
+		this.TempPlayers[id].currentGame={};
+		print(this.TempPlayers[id].id + " added.");
+		this.id++;
+		this.numPlayers++; 
+	  }
+  }
+  
+  rejoin (rejoinId, name){
+	  
   }
 
   draw() {
@@ -523,11 +542,11 @@ class Game {
 		  this.colliders.remove(this.players[id]);
 		  this.players[id].remove();
 		  delete this.players[id];
-		  this.numPlayers--;
 	  }
 	  else {
 		  this.players[id].disconnected=true;
 	  }
+	this.numPlayers--;
   }
 
   checkId (id) {
@@ -550,7 +569,12 @@ class Game {
               fill(this.players[id].color);
               charVal="[V] "
             }
-              text(charVal+this.players[id].displayName, x, y);
+              if (this.players[id].disconnected){
+				text(charVal+this.players[id].displayName+" (disconnected)", x, y);  
+			  }
+			  else{
+				  text(charVal+this.players[id].displayName, x, y);
+			  }
               y += 16;
           }
 
