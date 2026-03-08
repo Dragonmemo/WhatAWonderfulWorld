@@ -128,6 +128,7 @@ function reviewContinue(){
 }
 
 function nextLevel(){
+	if (gameState==-1){
 	let levelList=[];
 	for (let key in LOADER){
 		levelList.push(key);
@@ -135,6 +136,7 @@ function nextLevel(){
 	let idx=levelList.indexOf(currentSelect);
 	currentSelect=levelList[(idx+1)%levelList.length];
 	buttonLevel.label=currentSelect
+	}
 }
 
 function onButtonHostPress() {
