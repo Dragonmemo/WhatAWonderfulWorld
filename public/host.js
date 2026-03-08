@@ -493,17 +493,13 @@ class Game {
   }
 
   add (id, x, y, w, h) {
+	  //Faire ici une modif pour permettre aux gens de se reconnecter
     this.players[id] = createSprite(x, y, w, h);
     this.players[id].id = "p"+this.id;
-    //this.players[id].setCollider("rectangle", 0, 0, w, h);
     this.players[id].color = color(255, 255, 255);
-    //this.players[id].shapeColor = color(255, 255, 255);
-    //this.players[id].scale = 1;
-    //this.players[id].mass = 1;
     this.players[id].displayName = this.players[id].id;
     this.players[id].status=false;
     this.players[id].currentGame={};
-    //this.colliders.add(this.players[id]);
     print(this.players[id].id + " added.");
     this.id++;
     this.numPlayers++;
@@ -522,10 +518,12 @@ class Game {
   }
 
   remove (id) {
-      this.colliders.remove(this.players[id]);
-      this.players[id].remove();
-      delete this.players[id];
-      this.numPlayers--;
+	  if (gameState==-1){
+		  this.colliders.remove(this.players[id]);
+		  this.players[id].remove();
+		  delete this.players[id];
+		  this.numPlayers--;
+	  }
   }
 
   checkId (id) {
