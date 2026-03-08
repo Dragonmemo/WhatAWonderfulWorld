@@ -421,7 +421,7 @@ function processButton (data) {
   if (gameState>0){
     let statusReady = true;
     for (let id in game.players) {
-      if (!game.players[id].status){statusReady = false}}
+      if (!game.players[id].status && !game.players[id].disconnected){statusReady = false}}
     if (statusReady){
       gameState += 1;
 		  
@@ -499,6 +499,7 @@ class Game {
     this.players[id].color = color(255, 255, 255);
     this.players[id].displayName = this.players[id].id;
     this.players[id].status=false;
+	this.players[id].disconnected=false;
     this.players[id].currentGame={};
     print(this.players[id].id + " added.");
     this.id++;
@@ -523,6 +524,9 @@ class Game {
 		  this.players[id].remove();
 		  delete this.players[id];
 		  this.numPlayers--;
+	  }
+	  else {
+		  this.players[id].disconnected=true;
 	  }
   }
 
