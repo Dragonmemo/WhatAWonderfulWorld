@@ -132,7 +132,7 @@ function nextLevel(){
 	for (let key in LOADER){
 		levelList.push(key);
 	}
-	let idx=levelList.search(currentSelect);
+	let idx=levelList.indexOf(currentSelect);
 	currentSelect=levelList[(idx+1)%levelList.length];
 	buttonLevel.label=currentSelect
 }
