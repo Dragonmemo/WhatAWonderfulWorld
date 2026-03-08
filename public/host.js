@@ -90,6 +90,15 @@ function setup () {
   });
   buttonLevel.onPress = nextLevel;
   
+  buttonNewLevel = createButton("Custom prompt", width-410, 110, 400, 100);
+	buttonNewLevel.setStyle({
+    textSize: 40,
+    fillBg: color(130, 210, 100),
+    fillBgHover: color(100, 220, 100),
+    fillBgActive: color(70, 150, 70)
+  });
+  buttonNewLevel.onPress = customLevel;
+  
   button = createButton("Start", width-410, height-110, 400, 100);
     button.setStyle({
     textSize: 40,
@@ -136,6 +145,19 @@ function nextLevel(){
 	let idx=levelList.indexOf(currentSelect);
 	currentSelect=levelList[(idx+1)%levelList.length];
 	buttonLevel.label=currentSelect
+	}
+}
+
+function customLevel(){
+	if (gameState==-1){
+	let levelName = prompt("Give a name to your custom prompt")
+	let promptContents = prompt("Give the structure of your custom prompt | See tutorial : https://waww.up.railway.app/tutorial.html")
+	let promptExample = prompt("Give an example to your custom prompt | See tutorial : https://waww.up.railway.app/tutorial.html")
+	
+	LOADER[levelName]=[promptContents,promptExample];
+	currentSelect=levelName;
+	buttonLevel.label=currentSelect
+
 	}
 }
 
