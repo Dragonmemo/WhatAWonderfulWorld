@@ -440,6 +440,13 @@ function processButton (data) {
       else {
         gameState=-2
         indexPlayer=-1
+		
+		for (let indexx=0; indexx<game.currentPlayers.length; indexx++){
+			if (game.players[game.currentPlayers[indexx]].disconnected){
+				game.currentPlayers.splice(indexx);
+				indexx--;
+			}
+		}
 			
 		backgroundMusicGame.stopAll();
 		backgroundMusicReview.play();
