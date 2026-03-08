@@ -22,13 +22,6 @@ const local         = false;   // true if running locally, false
 
 // Global variables here. ---->
 
-const LOADER = {
-  Artifactory:
-    [
-      "J'ai trouvé un artefact, c'est(DETERMINANT)[2|Donne un adjectif qui précède un nom :|][1|Donne un objet (la première boite de texte est pour le déterminant, ex : le/la/les):|DETERMINANT][3|Donne un adjectif qui suit un nom :|]qui[5|Donne un effet (qui ...):|]quand[4|Donne une action (quand ...):|]",
-      "J'ai trouvé un artefact, c'est[1|la][2|plus petite][1|chaise][3|bleue]qui[5|tire des rayons laser]quand[4|tu la croques]ARTISTE."
-    ]
-};
 const velScale	= 10;
 const debug = false;
 let game;
@@ -36,7 +29,7 @@ let gui = null;
 //Gamestate : -2 = Review de la partie, -1 = lobby + review des parties précédentes si voulu, 1... = en partie
 let gameState = -1;
 let prompteur=null
-let currentSelect='Artifactory';
+let currentSelect='Artifactory_FR';
 let indexPlayer=-1
 let backgroundMusicMain, backgroundMusicGame, backgroundMusicReview;
 //Music by <a href="https://pixabay.com/users/sonican-38947841/?utm_source=link-attribution&utm_medium=referral&utm_campaign=music&utm_content=441293">Dvir Silverstone</a> from <a href="https://pixabay.com//?utm_source=link-attribution&utm_medium=referral&utm_campaign=music&utm_content=441293">Pixabay</a>
@@ -87,7 +80,16 @@ function setup () {
   soundEffNext.setVolume(0.3);
   soundEffWriting.setVolume(0.7);
   userStartAudio();
-
+  
+  buttonLevel = createButton(currentSelect, width-410, 10, 400, 100);
+	buttonLevel.setStyle({
+    textSize: 40,
+    fillBg: color(130, 210, 100),
+    fillBgHover: color(100, 220, 100),
+    fillBgActive: color(70, 150, 70)
+  });
+  buttonLevel.onPress = nextLevel;
+  
   button = createButton("Start", width-410, height-110, 400, 100);
     button.setStyle({
     textSize: 40,
@@ -123,6 +125,16 @@ function reviewContinue(){
     button.onPress = onButtonHostPress;
     button.label="Start";
   }
+}
+
+function nextLevel(){
+	let levelList=[];
+	for (let key in LOADER){
+		levelList.push(key);
+	}
+	let idx=levelList.search(currentSelect);
+	currentSelect=levelList[(idx+1)%levelList.length];
+	buttonLevel.label=currentSelect
 }
 
 function onButtonHostPress() {
