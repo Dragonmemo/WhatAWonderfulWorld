@@ -469,11 +469,15 @@ function processButton (data) {
 	else {
 		//Reconnexion :
 		//1 ) on check si le pseudo existe et est disconnected
+		console.log("je suis là : "+data.id)
 		let pseudonymList=[]
 		for (let psId=0; psId<game.currentPlayers.length;psId++){
 			pseudonymList.push(game.players[game.currentPlayers[psId]].displayName)
 		}
-		if (pseudonymList.findIndex((x)=>(x==data.contenu))==-1){return}
+		if (pseudonymList.findIndex((x)=>(x==data.contenu))==-1){
+			console.log(pseudonymList.findIndex((x)=>(x==data.contenu)))
+			console.log(pseudonymList)
+			return}
 		let pseudoId=pseudonymList.findIndex((x)=>(x==data.contenu))
 		if (game.players[game.currentPlayers[pseudoId]].disconnected){
 			//2 ) On remplace la personne sur les différentes listes
