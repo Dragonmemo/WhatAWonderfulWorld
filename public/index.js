@@ -16,6 +16,7 @@ let button      = null;
 let writeBox = null;
 let writeBox2 = null;
 let promptElement = null;
+let testValue=-1;
 
 // Initialize Game related variables
 let playerColor;
@@ -58,8 +59,8 @@ function draw() {
 
 // Messages can be sent from a host to all connected clients
 function onReceiveData (data) {
-  // Input data processing here. --->
   if (data.type === 'buttonHost') {
+	  testValue=data.testValue;
     promptElement.innerHTML=data.prompt;
     writeBox.value=null;
     if (data.addition){
@@ -71,15 +72,22 @@ function onReceiveData (data) {
     writeBox2.value=null;
     onButtonPress();
   }
-  // <----
-
-  /* Example:
-     if (data.type === 'myDataType') {
-       processMyData(data);
-     }
-
-     Use `data.type` to get the message type sent by host.
-  */
+    if (data.type === 'reload' && data.pseudo==writebox.innerHTML && testValue==-1) {
+		testValue=data.testValue;
+		promptElement.innerHTML=data.prompt;
+		writeBox.value=null;
+		if (data.addition){
+		  writeBox2.removeAttribute("hidden")
+		}
+		else{
+		  writeBox2.setAttribute("hidden",true);
+		}
+		writeBox2.value=null;
+		onButtonPress();
+		//Et on modifie la couleur du bouton/interface
+		playerColor=data.couleur;
+		
+  }
 }
 
 ////////////
@@ -138,7 +146,8 @@ function onButtonPress() {
   }
   else {
     data = {
-      button: true
+      button: true,
+	  reconnectValue: testValue
     }
     document.getElementById("story").setAttribute("disabled", "true");
     button.innerHTML = "Not Ready ?";
@@ -156,9 +165,3 @@ function onTextBoxChange(){
 
   sendData('txtChange', data);
 }
-
-/// Add these lines below sketch to prevent scrolling on mobile
-/*function touchMoved() {
-  // do some stuff
-  return false;
-}*/

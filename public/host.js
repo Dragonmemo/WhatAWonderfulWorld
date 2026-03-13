@@ -170,6 +170,7 @@ function onButtonHostPress() {
     processScript(currentSelect);
     let data = {
       button: button.val,
+	  testValue: 2,
       prompt: prompteur[gameState][0], //générer le prompt à partir de gamestate et ce qui est sélectionné
       addition: prompteur[gameState][1]
     }
@@ -416,53 +417,130 @@ function onReceiveData (data) {
 // Input processing
 
 function processButton (data) {
-  game.players[data.id].status = data.button;
+	if (gameState==-1 || data.reconnectValue!=-1){
+	  game.players[data.id].status = data.button;
 
-  if (gameState>0){
-    let statusReady = true;
-    for (let id in game.players) {
-      if (!game.players[id].status && !game.players[id].disconnected){statusReady = false}}
-    if (statusReady){
-      gameState += 1;
-		  
-		soundEffNext.play();
-		soundEffNext.setLoop(false);
+	  if (gameState>0){
+		let statusReady = true;
+		for (let id in game.players) {
+		  if (!game.players[id].status && !game.players[id].disconnected){statusReady = false}}
+		if (statusReady){
+		  gameState += 1;
+			  
+			soundEffNext.play();
+			soundEffNext.setLoop(false);
 
-      if (prompteur[gameState]){
-        let data = {
-          button: button.val,
-          prompt: prompteur[gameState][0],
-          addition: prompteur[gameState][1]
-        }
-        
-        sendData('buttonHost', data);
-      }
-      else {
-        gameState=-2
-        indexPlayer=-1
-		
-		for (let indexx=0; indexx<game.currentPlayers.length; indexx++){
-			if (game.players[game.currentPlayers[indexx]].disconnected){
-				game.currentPlayers.splice(indexx);
-				indexx--;
+		  if (prompteur[gameState]){
+			let data = {
+			  button: button.val,
+			  prompt: prompteur[gameState][0],
+			  addition: prompteur[gameState][1]
 			}
-		}
 			
-		backgroundMusicGame.stopAll();
-		backgroundMusicReview.play();
-		backgroundMusicReview.loop();
-		
-        button.onPress=reviewContinue;
+			sendData('buttonHost', data);
+		  }
+		  else {
+			gameState=-2
+			indexPlayer=-1
+			
+			for (let indexx=0; indexx<game.currentPlayers.length; indexx++){
+				if (game.players[game.currentPlayers[indexx]].disconnected){
+					game.currentPlayers.splice(indexx);
+					indexx--;
+				}
+			}
+				
+			backgroundMusicGame.stopAll();
+			backgroundMusicReview.play();
+			backgroundMusicReview.loop();
+			
+			button.onPress=reviewContinue;
 
-        button.label="Next"
-        button.setStyle({
-        fillBg: color(130, 210, 100),
-        fillBgHover: color(100, 220, 100),
-        fillBgActive: color(70, 150, 70)
-      });
-      }
-    }
-  }
+			button.label="Next"
+			button.setStyle({
+			fillBg: color(130, 210, 100),
+			fillBgHover: color(100, 220, 100),
+			fillBgActive: color(70, 150, 70)
+		  });
+		  }
+		}
+	  }
+	}
+	else {
+		//Reconnexion :
+		//1 ) on check si le pseudo existe et est disconnected
+		let pseudonymList=[]
+		for (let psId=0; psId<game.currentPlayers.length;psId++){
+			pseudonymList.push(game.players[game.currentPlayers[psId]].displayName)
+		}
+		if (pseudonymList.search(data.contenu)==-1){return}
+		let pseudoId=pseudonymList.search(data.contenu)
+		if (game.players[game.currentPlayers[pseudoId]].disconnected){
+			//2 ) On remplace la personne sur les différentes listes
+			game.players[data.id]=game.players[game.currentPlayers[pseudoId]]
+			delete game.players[game.currentPlayers[pseudoId]]
+			
+			//3 ) On alimente la personne pour qu'elle ait le bon texte a remplir
+			let data2 = {
+			  pseudo: data.contenu,
+			  testValue: 2,
+			  prompt: prompteur[gameState][0],
+			  addition: prompteur[gameState][1],
+			  couleur: game.players[data.id].color
+			}
+			
+			sendData('reload', data2);
+		
+		}
+		
+		game.players[data.id].status = data.button;
+
+	  if (gameState>0){
+		let statusReady = true;
+		for (let id in game.players) {
+		  if (!game.players[id].status && !game.players[id].disconnected){statusReady = false}}
+		if (statusReady){
+		  gameState += 1;
+			  
+			soundEffNext.play();
+			soundEffNext.setLoop(false);
+
+		  if (prompteur[gameState]){
+			let data = {
+			  button: button.val,
+			  prompt: prompteur[gameState][0],
+			  addition: prompteur[gameState][1]
+			}
+			
+			sendData('buttonHost', data);
+		  }
+		  else {
+			gameState=-2
+			indexPlayer=-1
+			
+			for (let indexx=0; indexx<game.currentPlayers.length; indexx++){
+				if (game.players[game.currentPlayers[indexx]].disconnected){
+					game.currentPlayers.splice(indexx);
+					indexx--;
+				}
+			}
+				
+			backgroundMusicGame.stopAll();
+			backgroundMusicReview.play();
+			backgroundMusicReview.loop();
+			
+			button.onPress=reviewContinue;
+
+			button.label="Next"
+			button.setStyle({
+			fillBg: color(130, 210, 100),
+			fillBgHover: color(100, 220, 100),
+			fillBgActive: color(70, 150, 70)
+		  });
+		  }
+		}
+	  }
+	}
   if (debug) {
     console.log(data.id + ': ' +
                 data.button);
@@ -515,14 +593,14 @@ class Game {
 		this.numPlayers++;
 	  }
 	  else{
-		this.TempPlayers[id] = createSprite(x, y, w, h);
-		this.TempPlayers[id].id = "p"+this.id;
-		this.TempPlayers[id].color = color(255, 255, 255);
-		this.TempPlayers[id].displayName = this.players[id].id;
-		this.TempPlayers[id].status=false;
-		this.TempPlayers[id].disconnected=false;
-		this.TempPlayers[id].currentGame={};
-		print(this.TempPlayers[id].id + " added.");
+		this.tempPlayers[id] = createSprite(x, y, w, h);
+		this.tempPlayers[id].id = "p"+this.id;
+		this.tempPlayers[id].color = color(255, 255, 255);
+		this.tempPlayers[id].displayName = this.players[id].id;
+		this.tempPlayers[id].status=false;
+		this.tempPlayers[id].disconnected=false;
+		this.tempPlayers[id].currentGame={};
+		print(this.tempPlayers[id].id + " added.");
 		this.id++;
 		this.numPlayers++; 
 	  }
