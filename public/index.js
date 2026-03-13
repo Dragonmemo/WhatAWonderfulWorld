@@ -72,7 +72,9 @@ function onReceiveData (data) {
     writeBox2.value=null;
     onButtonPress();
   }
-    if (data.type === 'reload' && data.pseudo==writebox.innerHTML && testValue==-1) {
+  console.log(data.pseudo)
+  console.log(writebox.value)
+    if (data.type === 'reload' && data.pseudo==writebox.value && testValue==-1) {
 		testValue=data.testValue;
 		promptElement.innerHTML=data.prompt;
 		writeBox.value=null;

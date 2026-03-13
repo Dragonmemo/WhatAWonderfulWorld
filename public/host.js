@@ -484,6 +484,8 @@ function processButton (data) {
 			//2 ) On remplace la personne sur les différentes listes
 			game.players[data.id]=game.players[game.currentPlayers[pseudoId]]
 			delete game.players[game.currentPlayers[pseudoId]]
+			game.players[data.id].disconnected=false;
+			
 			
 			//3 ) On alimente la personne pour qu'elle ait le bon texte a remplir
 			let data2 = {
