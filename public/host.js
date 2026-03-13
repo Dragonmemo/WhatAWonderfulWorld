@@ -29,7 +29,7 @@ let gui = null;
 //Gamestate : -2 = Review de la partie, -1 = lobby + review des parties précédentes si voulu, 1... = en partie
 let gameState = -1;
 let prompteur=null
-let currentSelect='Artifactory_FR';
+let currentSelect='Artifactory FR';
 let indexPlayer=-1
 let backgroundMusicMain, backgroundMusicGame, backgroundMusicReview;
 //Music by <a href="https://pixabay.com/users/sonican-38947841/?utm_source=link-attribution&utm_medium=referral&utm_campaign=music&utm_content=441293">Dvir Silverstone</a> from <a href="https://pixabay.com//?utm_source=link-attribution&utm_medium=referral&utm_campaign=music&utm_content=441293">Pixabay</a>
@@ -407,7 +407,7 @@ function onReceiveData (data) {
 		timeOutWriting=millis();
 	}
   }
-  else if (data.type === 'playerColor') {
+  else if (data.type === 'playerColor' && gameState==-1) {
     game.setColor(data.id, data.r*255, data.g*255, data.b*255);
   }
 
@@ -473,8 +473,8 @@ function processButton (data) {
 		for (let psId=0; psId<game.currentPlayers.length;psId++){
 			pseudonymList.push(game.players[game.currentPlayers[psId]].displayName)
 		}
-		if (pseudonymList.search(data.contenu)==-1){return}
-		let pseudoId=pseudonymList.search(data.contenu)
+		if (pseudonymList.findIndex((x)=>(x==data.contenu))==-1){return}
+		let pseudoId=pseudonymList.findIndex((x)=>(x==data.contenu))
 		if (game.players[game.currentPlayers[pseudoId]].disconnected){
 			//2 ) On remplace la personne sur les différentes listes
 			game.players[data.id]=game.players[game.currentPlayers[pseudoId]]
@@ -596,7 +596,7 @@ class Game {
 		this.tempPlayers[id] = createSprite(x, y, w, h);
 		this.tempPlayers[id].id = "p"+this.id;
 		this.tempPlayers[id].color = color(255, 255, 255);
-		this.tempPlayers[id].displayName = this.players[id].id;
+		this.tempPlayers[id].displayName = this.tempPlayers[id].id;
 		this.tempPlayers[id].status=false;
 		this.tempPlayers[id].disconnected=false;
 		this.tempPlayers[id].currentGame={};
