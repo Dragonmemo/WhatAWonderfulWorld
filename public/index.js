@@ -147,6 +147,7 @@ function onButtonPress() {
   else {
     data = {
       button: true,
+	  contenu: writeBox.value,
 	  reconnectValue: testValue
     }
     document.getElementById("story").setAttribute("disabled", "true");

@@ -477,6 +477,7 @@ function processButton (data) {
 		if (pseudonymList.findIndex((x)=>(x==data.contenu))==-1){
 			console.log(pseudonymList.findIndex((x)=>(x==data.contenu)))
 			console.log(pseudonymList)
+			console.log(data.contenu)
 			return}
 		let pseudoId=pseudonymList.findIndex((x)=>(x==data.contenu))
 		if (game.players[game.currentPlayers[pseudoId]].disconnected){
