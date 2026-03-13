@@ -41,21 +41,6 @@ function setup() {
   });
 } 
 
-function windowResized() {
-  resizeCanvas(windowWidth, windowHeight);
-}
-
-function draw() {
-  background(0);
-
-  if(isClientConnected(display=true)) {
-    // Client draw here. ---->
-
-    drawGui();
-
-    // <---
-  }
-}
 
 // Messages can be sent from a host to all connected clients
 function onReceiveData (data) {
@@ -72,9 +57,7 @@ function onReceiveData (data) {
     writeBox2.value=null;
     onButtonPress();
   }
-  console.log(data.pseudo)
-  console.log(writebox.value)
-    if (data.type === 'reload' && data.pseudo==writebox.value && testValue==-1) {
+    if (data.type === 'reload' && data.pseudo==writeBox.value && testValue==-1) {
 		testValue=data.testValue;
 		promptElement.innerHTML=data.prompt;
 		writeBox.value=null;
