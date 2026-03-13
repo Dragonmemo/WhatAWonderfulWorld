@@ -484,6 +484,7 @@ function processButton (data) {
 			//2 ) On remplace la personne sur les différentes listes
 			game.players[data.id]=game.players[game.currentPlayers[pseudoId]]
 			delete game.players[game.currentPlayers[pseudoId]]
+			game.currentPlayers[pseudoId]=data.id
 			game.players[data.id].disconnected=false;
 			
 			
