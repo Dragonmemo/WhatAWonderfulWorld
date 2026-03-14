@@ -230,6 +230,9 @@ function draw () {
     if (gameState==-2 && indexPlayer>=0){
       showPrompt();
     }
+	if (gameState==-1){
+      showExample();
+    }
   }
 }
 
@@ -285,6 +288,58 @@ function printExample(strKey,id){
       }
     }
     tempId+=LOADER[strKey][1].slice(tempId).search(/\]/)+1;
+    
+  }
+  //Il devrait rester encore une section blanche qui manque après
+}
+
+function showExample(){
+  noStroke();
+	let x0=0;
+  let y0=0;
+	let tempId=0;
+  let words=null;
+  let tempFocus;
+  let tempPlayerIndex;
+  textFont('Verdana',40);
+  //je peux mettre un font ici
+  while (LOADER[currentSelect][1].slice(tempId).search(/\[/)!=-1){
+    words = LOADER[currentSelect][1].slice(tempId,tempId+LOADER[currentSelect][1].slice(tempId).search(/\[/)).split(' ');
+    fill(255,255,255);
+    for (let i=0;i<words.length;i++){
+      if (x0+textWidth(words[i]+' ')<windowWidth*0.6){
+        text(words[i],windowWidth*0.1+x0,160+y0);
+        x0+=textWidth(words[i]+' ');
+      }
+      else {
+        x0=0;
+        y0+=60;
+        text(words[i],windowWidth*0.1+x0,160+y0);
+        x0+=textWidth(words[i]+' ');
+      }
+    }
+
+    tempId+=LOADER[currentSelect][1].slice(tempId).search(/\[/)+1;
+    tempFocus=LOADER[currentSelect][1].slice(tempId).split(/\]/)[0];
+	tempPlayerIndex=parseInt(tempFocus.split('|')[0])-1;
+	words = tempFocus.split('|')[1].split(' ');
+	colorMode(HSB);
+	fill(color(360*tempPlayerIndex*(Math.sqrt(5)/2-0.5), 100, 100));
+	colorMode(RGB);
+
+	for (let i=0;i<words.length;i++){
+		if (x0+textWidth(words[i]+' ')<windowWidth*0.8){
+		  text(words[i],windowWidth*0.1+x0,160+y0);
+		  x0+=textWidth(words[i]+' ');
+		}
+		else {
+		  x0=0;
+		  y0+=60;
+		  text(words[i],windowWidth*0.1+x0,160+y0);
+		  x0+=textWidth(words[i]+' ');
+		}
+	}
+	tempId+=LOADER[currentSelect][1].slice(tempId).search(/\]/)+1;
     
   }
   //Il devrait rester encore une section blanche qui manque après
@@ -467,18 +522,11 @@ function processButton (data) {
 	  }
 	}
 	else {
-		//Reconnexion :
-		//1 ) on check si le pseudo existe et est disconnected
-		console.log("je suis là : "+data.id)
 		let pseudonymList=[]
 		for (let psId=0; psId<game.currentPlayers.length;psId++){
 			pseudonymList.push(game.players[game.currentPlayers[psId]].displayName)
 		}
-		if (pseudonymList.findIndex((x)=>(x==data.contenu))==-1){
-			console.log(pseudonymList.findIndex((x)=>(x==data.contenu)))
-			console.log(pseudonymList)
-			console.log(data.contenu)
-			return}
+		if (pseudonymList.findIndex((x)=>(x==data.contenu))==-1){return}
 		let pseudoId=pseudonymList.findIndex((x)=>(x==data.contenu))
 		if (game.players[game.currentPlayers[pseudoId]].disconnected){
 			//2 ) On remplace la personne sur les différentes listes
