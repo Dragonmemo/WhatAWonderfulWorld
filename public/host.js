@@ -324,7 +324,7 @@ function showExample(){
 	tempPlayerIndex=parseInt(tempFocus.split('|')[0])-1;
 	words = tempFocus.split('|')[1].split(' ');
 	colorMode(HSB);
-	fill(color(360*tempPlayerIndex*(Math.sqrt(5)/2-0.5), 100, 100));
+	fill(color((360*tempPlayerIndex*(Math.sqrt(5)/2-0.5))%360, 100, 100));
 	colorMode(RGB);
 
 	for (let i=0;i<words.length;i++){
