@@ -254,13 +254,13 @@ function printExample(strKey,id){
     fill(255,255,255);
     for (let i=0;i<words.length;i++){
       if (x0+textWidth(words[i]+' ')<windowWidth*0.6){
-        text(words[i],windowWidth*0.1+x0,160+y0);
+        text(words[i],windowWidth*0.2+x0,160+y0);
         x0+=textWidth(words[i]+' ');
       }
       else {
         x0=0;
         y0+=60;
-        text(words[i],windowWidth*0.1+x0,160+y0);
+        text(words[i],windowWidth*0.2+x0,160+y0);
         x0+=textWidth(words[i]+' ');
       }
     }
@@ -277,13 +277,13 @@ function printExample(strKey,id){
     }
     for (let i=0;i<words.length;i++){
       if (x0+textWidth(words[i]+' ')<windowWidth*0.6){
-        text(words[i],windowWidth*0.1+x0,160+y0);
+        text(words[i],windowWidth*0.2+x0,160+y0);
         x0+=textWidth(words[i]+' ');
       }
       else {
         x0=0;
         y0+=60;
-        text(words[i],windowWidth*0.1+x0,160+y0);
+        text(words[i],windowWidth*0.2+x0,160+y0);
         x0+=textWidth(words[i]+' ');
       }
     }
@@ -308,13 +308,13 @@ function showExample(){
     fill(255,255,255);
     for (let i=0;i<words.length;i++){
       if (x0+textWidth(words[i]+' ')<windowWidth*0.6){
-        text(words[i],windowWidth*0.1+x0,160+y0);
+        text(words[i],windowWidth*0.2+x0,160+y0);
         x0+=textWidth(words[i]+' ');
       }
       else {
         x0=0;
         y0+=60;
-        text(words[i],windowWidth*0.1+x0,160+y0);
+        text(words[i],windowWidth*0.2+x0,160+y0);
         x0+=textWidth(words[i]+' ');
       }
     }
@@ -328,14 +328,14 @@ function showExample(){
 	colorMode(RGB);
 
 	for (let i=0;i<words.length;i++){
-		if (x0+textWidth(words[i]+' ')<windowWidth*0.8){
-		  text(words[i],windowWidth*0.1+x0,160+y0);
+		if (x0+textWidth(words[i]+' ')<windowWidth*0.6){
+		  text(words[i],windowWidth*0.2+x0,160+y0);
 		  x0+=textWidth(words[i]+' ');
 		}
 		else {
 		  x0=0;
 		  y0+=60;
-		  text(words[i],windowWidth*0.1+x0,160+y0);
+		  text(words[i],windowWidth*0.2+x0,160+y0);
 		  x0+=textWidth(words[i]+' ');
 		}
 	}
@@ -360,13 +360,13 @@ function showPrompt(){
     fill(255,255,255);
     for (let i=0;i<words.length;i++){
       if (x0+textWidth(words[i]+' ')<windowWidth*0.6){
-        text(words[i],windowWidth*0.1+x0,160+y0);
+        text(words[i],windowWidth*0.2+x0,160+y0);
         x0+=textWidth(words[i]+' ');
       }
       else {
         x0=0;
         y0+=60;
-        text(words[i],windowWidth*0.1+x0,160+y0);
+        text(words[i],windowWidth*0.2+x0,160+y0);
         x0+=textWidth(words[i]+' ');
       }
     }
@@ -386,13 +386,13 @@ function showPrompt(){
 
       for (let i=0;i<words.length;i++){
         if (x0+textWidth(words[i]+' ')<windowWidth*0.6){
-          text(words[i],windowWidth*0.1+x0,160+y0);
+          text(words[i],windowWidth*0.2+x0,160+y0);
           x0+=textWidth(words[i]+' ');
         }
         else {
           x0=0;
           y0+=60;
-          text(words[i],windowWidth*0.1+x0,160+y0);
+          text(words[i],windowWidth*0.2+x0,160+y0);
           x0+=textWidth(words[i]+' ');
         }
       }
@@ -407,14 +407,14 @@ function showPrompt(){
       fill(game.players[game.currentPlayers[(indexPlayer+tempPlayerIndex)%game.currentPlayers.length]].color)
 
       for (let i=0;i<words.length;i++){
-        if (x0+textWidth(words[i]+' ')<windowWidth*0.8){
-          text(words[i],windowWidth*0.1+x0,160+y0);
+        if (x0+textWidth(words[i]+' ')<windowWidth*0.6){
+          text(words[i],windowWidth*0.2+x0,160+y0);
           x0+=textWidth(words[i]+' ');
         }
         else {
           x0=0;
           y0+=60;
-          text(words[i],windowWidth*0.1+x0,160+y0);
+          text(words[i],windowWidth*0.2+x0,160+y0);
           x0+=textWidth(words[i]+' ');
         }
       }
