@@ -13,5 +13,15 @@ const LOADER = {
 	[
 	  "I found an artefact, it's (DETERMINANT)[2|Give an adjective preceding the name :|][1|Give an objet (the first textbox is for the determinant, ex : a/an/the):|DETERMINANT][3|Give an adjective that follows the name :|]which[5|Give it an effect (which ...):|]when[4|Give it an action (when ...):|]",
 	  "I found an artefact, it's [1|the][2|smallest][1|chair][3|that is blue]which[5|shoot lasers]when[4|you nibble on it]."
+	],
+	"WYR FR":
+	[
+	  "Qu'est-ce que tu préfères entre[1|Donne un verbe à l'infinitif :|][2|Donne un complément :|]ou[3|Donne un verbe à l'infinitif :|][4|Donne un complément :|]?",
+	  "Qu'est-ce que tu préfères entre[1|manger][2|une chaussure]ou[3|aspirer][4|des pâtes par le nez]?"
+	],
+	"WYR EN":
+	[
+	  "Would you rather[1|Give a verb :|][2|Give a complement :|]or[3|Give a verb :|][4|Give a complement :|]?",
+	  "Would you rather[1|eat][2|a shoe]or[3|breath in][4|pastas by the nose]?"
 	]
 };
