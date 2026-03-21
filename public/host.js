@@ -378,10 +378,12 @@ function showPrompt(){
         .split("|"+tempFocus+"]")[0]
         .split('[')[LOADER[currentSelect][0].split("|"+tempFocus+"]")[0].split('[').length-1]
         .split('|')[0])-1;
-      words = game.players[game.currentPlayers[(indexPlayer+tempPlayerIndex)%game.currentPlayers.length]]
+      try{
+		words = game.players[game.currentPlayers[(indexPlayer+tempPlayerIndex)%game.currentPlayers.length]]
                     .currentGame[currentSelect][tempFocus]
                       .split(' ');
-      
+      }catch(erreur){words=["[REDACTED]"]}
+		
       fill(game.players[game.currentPlayers[(indexPlayer+tempPlayerIndex)%game.currentPlayers.length]].color)
 
       for (let i=0;i<words.length;i++){
@@ -401,9 +403,11 @@ function showPrompt(){
     else{
       tempFocus=LOADER[currentSelect][0].slice(tempId).split(/\]/)[0];
       tempPlayerIndex=parseInt(tempFocus.split('|')[0])-1;
-      words = game.players[game.currentPlayers[(indexPlayer+tempPlayerIndex)%game.currentPlayers.length]]
+		try{
+			words = game.players[game.currentPlayers[(indexPlayer+tempPlayerIndex)%game.currentPlayers.length]]
                     .currentGame[currentSelect][tempPlayerIndex+1]
                       .split(' ');
+		}catch(erreur){words=["[REDACTED]"]}
       fill(game.players[game.currentPlayers[(indexPlayer+tempPlayerIndex)%game.currentPlayers.length]].color)
 
       for (let i=0;i<words.length;i++){
