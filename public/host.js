@@ -493,7 +493,9 @@ function processButton (data) {
 			let data = {
 			  button: button.val,
 			  prompt: prompteur[gameState][0],
-			  addition: prompteur[gameState][1]
+			  addition: prompteur[gameState][1],
+			  exemple: LOADER[currentSelect][1],
+			  exID: gamestate
 			}
 			
 			sendData('buttonHost', data);
