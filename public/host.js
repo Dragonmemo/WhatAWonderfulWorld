@@ -174,7 +174,7 @@ function onButtonHostPress() {
       prompt: prompteur[gameState][0], //générer le prompt à partir de gamestate et ce qui est sélectionné
       addition: prompteur[gameState][1],
 	  exemple: LOADER[currentSelect][1],
-	  exID: gamestate
+	  exID: gameState
 	}
 	console.log(data.exemple)
     let tempList=[]
@@ -498,7 +498,7 @@ function processButton (data) {
 			  prompt: prompteur[gameState][0],
 			  addition: prompteur[gameState][1],
 			  exemple: LOADER[currentSelect][1],
-			  exID: gamestate
+			  exID: gameState
 			}
 			console.log(data.exemple)
 			sendData('buttonHost', data);
@@ -553,7 +553,7 @@ function processButton (data) {
 			  addition: prompteur[gameState][1],
 			  couleur: game.players[data.id].color,
 			  exemple: LOADER[currentSelect][1],
-			  exID: gamestate
+			  exID: gameState
 			}
 			console.log(data2.exemple)
 			
@@ -579,7 +579,7 @@ function processButton (data) {
 			  prompt: prompteur[gameState][0],
 			  addition: prompteur[gameState][1],
 			  exemple: LOADER[currentSelect][1],
-			  exID: gamestate
+			  exID: gameState
 			}
 			console.log(data.exemple)
 			
