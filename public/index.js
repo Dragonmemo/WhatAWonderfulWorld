@@ -54,6 +54,7 @@ function showExample(ex, ID){
 		else{
 		htmlContent+='<d>'+tempFocus.split('|')[1]+'</d> ';
 		}
+		tempId+=ex.slice(tempId).search(/\]/)+1;
 	}
 	document.getElementById('Exampleur').innerHTML=htmlContent;
 }
