@@ -55,6 +55,7 @@ function showExample(ex, ID){
 		htmlContent+='<d>'+tempFocus.split('|')[1].split(' ')+'</d> ';
 		}
 	}
+	document.getElementById('Exampleur').innerHTML=htmlContent;
 }
 
 // Messages can be sent from a host to all connected clients
@@ -71,7 +72,6 @@ function onReceiveData (data) {
     }
     writeBox2.value=null;
     onButtonPress();
-	console.log(data)
 	//afficher l'exemple
 	showExample(data.exemple, data.exID)
   }

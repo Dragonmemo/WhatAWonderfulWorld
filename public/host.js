@@ -176,7 +176,6 @@ function onButtonHostPress() {
 	  exemple: LOADER[currentSelect][1],
 	  exID: gameState
 	}
-	console.log(data.exemple)
     let tempList=[]
     for (let id in game.players) {
       game.players[id].currentGame[currentSelect]={};
@@ -500,7 +499,6 @@ function processButton (data) {
 			  exemple: LOADER[currentSelect][1],
 			  exID: gameState
 			}
-			console.log(data.exemple)
 			sendData('buttonHost', data);
 		  }
 		  else {
@@ -555,8 +553,6 @@ function processButton (data) {
 			  exemple: LOADER[currentSelect][1],
 			  exID: gameState
 			}
-			console.log(data2.exemple)
-			
 			sendData('reload', data2);
 		
 		}
@@ -581,8 +577,6 @@ function processButton (data) {
 			  exemple: LOADER[currentSelect][1],
 			  exID: gameState
 			}
-			console.log(data.exemple)
-			
 			sendData('buttonHost', data);
 		  }
 		  else {
