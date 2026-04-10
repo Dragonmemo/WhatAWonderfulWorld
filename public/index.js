@@ -47,7 +47,6 @@ function showExample(ex, ID){
 	while (ex.slice(tempId).search(/\[/)!=-1){
 		htmlContent+='<d>'+ex.slice(tempId,tempId+ex.slice(tempId).search(/\[/))+'</d> ';
 		tempId+=ex.slice(tempId).search(/\[/)+1;
-		console.log(tempId)
 		tempFocus=ex.slice(tempId).split(/\]/)[0];
 		if (ID==tempFocus.split('|')[0]){
 		htmlContent+='<d style="color:red;">'+tempFocus.split('|')[1]+'</d> ';
@@ -56,7 +55,6 @@ function showExample(ex, ID){
 		htmlContent+='<d>'+tempFocus.split('|')[1]+'</d> ';
 		}
 		tempId+=ex.slice(tempId).search(/\]/)+1;
-		console.log(tempId)
 	}
 	document.getElementById('Exampleur').innerHTML=htmlContent;
 }
