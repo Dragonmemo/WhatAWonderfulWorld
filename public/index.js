@@ -45,14 +45,14 @@ function showExample(ex, ID){
 	let tempId=0;
 	let htmlContent=''
 	while (ex.slice(tempId).search(/\[/)!=-1){
-		htmlContent+='<d>'+ex.slice(ID,tempId+ex.slice(tempId).search(/\[/))+'</d> ';
+		htmlContent+='<d>'+ex.slice(tempId,tempId+ex.slice(tempId).search(/\[/))+'</d> ';
 		tempId+=ex.slice(tempId).search(/\[/)+1;
 		tempFocus=ex.slice(tempId).split(/\]/)[0];
 		if (ID==tempFocus.split('|')[0]){
-		htmlContent+='<d style="color:red;">'+tempFocus.split('|')[1].split(' ')+'</d> ';
+		htmlContent+='<d style="color:red;">'+tempFocus.split('|')[1]+'</d> ';
 		}
 		else{
-		htmlContent+='<d>'+tempFocus.split('|')[1].split(' ')+'</d> ';
+		htmlContent+='<d>'+tempFocus.split('|')[1]+'</d> ';
 		}
 	}
 	document.getElementById('Exampleur').innerHTML=htmlContent;
