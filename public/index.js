@@ -71,6 +71,7 @@ function onReceiveData (data) {
     }
     writeBox2.value=null;
     onButtonPress();
+	console.log(data)
 	//afficher l'exemple
 	showExample(data.exemple, data.exID)
   }

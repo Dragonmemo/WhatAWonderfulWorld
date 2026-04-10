@@ -497,7 +497,7 @@ function processButton (data) {
 			  exemple: LOADER[currentSelect][1],
 			  exID: gamestate
 			}
-			
+			console.log(data.exemple)
 			sendData('buttonHost', data);
 		  }
 		  else {
