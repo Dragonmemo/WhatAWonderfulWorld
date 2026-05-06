@@ -720,7 +720,7 @@ class Game {
   }
 
   checkId (id) {
-      if (id in this.players) { return true; console.log("et moi je suis appele ?"}
+      if (id in this.players) { return true; console.log("et moi je suis appele ?")}
       else { return false; }
   }
 
