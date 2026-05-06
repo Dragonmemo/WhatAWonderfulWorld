@@ -505,6 +505,7 @@ function processButton (data) {
 		  //On retire les gens qui sont deconnecte a ce moment
 			for (let id in game.players) {
 			  if (game.players[id].disconnected){
+				  game.currentPlayers.splice(game.currentPlayers.indexOf(id),1)
 				game.colliders.remove(game.players[id]);
 				game.players[id].remove();
 				delete game.players[id];
