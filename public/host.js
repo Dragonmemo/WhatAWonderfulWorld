@@ -133,6 +133,13 @@ function reviewContinue(){
     });
     button.onPress = onButtonHostPress;
     button.label="Start";
+	
+	//On remet tous les joueurs en attente dans la liste des joueurs actifs
+	for (let id in game.tempPlayers) {
+	  game.add(id);
+	  game.players[id].color=game.tempPlayers[id].color;
+	}
+	game.tempPlayers={};
   }
 }
 
@@ -163,9 +170,11 @@ function customLevel(){
 
 function onButtonHostPress() {
   let statusReady = true;
+  let playCount=0;
   for (let id in game.players) {
-    if (!game.players[id].status){statusReady = false}}
-  if (statusReady){
+    playCount++;
+	if (!game.players[id].status){statusReady = false}}
+  if (statusReady && playCount>1){
     gameState = 1;
     processScript(currentSelect);
     let data = {
@@ -190,6 +199,7 @@ function onButtonHostPress() {
     }
 	
 	backgroundMusicMain.stopAll();
+	backgroundMusicMain.setLoop(false);
 	backgroundMusicGame.play();
 	backgroundMusicGame.loop();
 	
@@ -435,11 +445,7 @@ function onClientConnect (data) {
   // Client connect logic here. --->
 
   if (!game.checkId(data.id)) {
-    game.add(data.id,
-            random(0.25*width, 0.75*width),
-            random(0.25*height, 0.75*height),
-            60, 60
-    );
+    game.add(data.id);
   }
 
   // <----
@@ -483,14 +489,28 @@ function processButton (data) {
 
 	  if (gameState>0){
 		let statusReady = true;
+		let activePlayCount=0;
 		for (let id in game.players) {
-		  if (!game.players[id].status && !game.players[id].disconnected){statusReady = false}}
-		if (statusReady){
+		  if (!game.players[id].disconnected){
+			if(!game.players[id].status){statusReady = false}
+			else {activePlayCount++}
+		  }
+		}
+		if (statusReady && activePlayCount>0){
 		  gameState += 1;
 			  
 			soundEffNext.play();
 			soundEffNext.setLoop(false);
-
+			
+		  //On retire les gens qui sont deconnecte a ce moment
+			for (let id in game.players) {
+			  if (game.players[id].disconnected){
+				game.colliders.remove(game.players[id]);
+				game.players[id].remove();
+				delete game.players[id];
+			  }
+			}
+		  
 		  if (prompteur[gameState]){
 			let data = {
 			  button: button.val,
@@ -530,6 +550,7 @@ function processButton (data) {
 	}
 	else {
 		let pseudonymList=[]
+		//1 ) on cherche qui se reconnecte
 		for (let psId=0; psId<game.currentPlayers.length;psId++){
 			pseudonymList.push(game.players[game.currentPlayers[psId]].displayName)
 		}
@@ -643,10 +664,10 @@ class Game {
 	this.tempPlayers={};
   }
 
-  add (id, x, y, w, h) {
+  add (id) {
 	  //Faire ici une modif pour permettre aux gens de se reconnecter
 	  if (gameState==-1){
-		this.players[id] = createSprite(x, y, w, h);
+		this.players[id] = createSprite();
 		this.players[id].id = "p"+this.id;
 		this.players[id].color = color(255, 255, 255);
 		this.players[id].displayName = this.players[id].id;
@@ -658,7 +679,7 @@ class Game {
 		this.numPlayers++;
 	  }
 	  else{
-		this.tempPlayers[id] = createSprite(x, y, w, h);
+		this.tempPlayers[id] = createSprite();
 		this.tempPlayers[id].id = "p"+this.id;
 		this.tempPlayers[id].color = color(255, 255, 255);
 		this.tempPlayers[id].displayName = this.tempPlayers[id].id;
@@ -672,7 +693,7 @@ class Game {
   }
   
   rejoin (rejoinId, name){
-	  
+	  console.log("Je sais pas si je sers...")
   }
 
   draw() {
@@ -682,7 +703,6 @@ class Game {
 
   setColor (id, r, g, b) {
     this.players[id].color = color(r, g, b);
-    this.players[id].shapeColor = color(r, g, b);
 
     print(this.players[id].id + " color added.");
   }
@@ -700,7 +720,7 @@ class Game {
   }
 
   checkId (id) {
-      if (id in this.players) { return true; }
+      if (id in this.players) { return true; console.log("et moi je suis appele ?"}
       else { return false; }
   }
 
@@ -731,91 +751,4 @@ class Game {
       pop();
   }
 
-  /*setVelocity(id, velx, vely) {
-      this.players[id].velocity.x = velx;
-      this.players[id].velocity.y = vely;
-  }*/
-
-  /*checkBounds() {
-      for (let id in this.players) {
-
-          if (this.players[id].position.x < 0) {
-              this.players[id].position.x = this.w - 1;
-          }
-
-          if (this.players[id].position.x > this.w) {
-              this.players[id].position.x = 1;
-          }
-
-          if (this.players[id].position.y < 0) {
-              this.players[id].position.y = this.h - 1;
-          }
-
-          if (this.players[id].position.y > this.h) {
-              this.players[id].position.y = 1;
-          }
-      }
-  }*/
 }
-
-/* A simple pair of classes for generating ripples
-class Ripples {
-  constructor() {
-    this.ripples = [];
-  }
-
-  add(x, y, r, duration, rcolor) {
-    this.ripples.push(new Ripple(x, y, r, duration, rcolor));
-  }
-
-  draw() {
-    for (let i = 0; i < this.ripples.length; i++) {
-      // Draw each ripple in the array
-      if(this.ripples[i].draw()) {
-        // If the ripple is finished (returns true), remove it
-        this.ripples.splice(i, 1);
-      }
-    }
-  }
-}
-
-class Ripple {
-  constructor(x, y, r, duration, rcolor) {
-    this.x = x;
-    this.y = y;
-    this.r = r;
-
-    // If rcolor is not defined, default to white
-    if (rcolor == null) {
-      rcolor = color(255);
-    }
-
-    this.stroke = rcolor;
-    this.strokeWeight = 3;
-
-    this.duration = duration;   // in milliseconds
-    this.startTime = millis();
-    this.endTime = this.startTime + this.duration;
-  }
-
-  draw() {
-    let progress = (this.endTime - millis())/this.duration;
-    let r = this.r*(1 - progress);
-
-    push();
-      stroke(red(this.stroke), 
-             green(this.stroke), 
-             blue(this.stroke), 
-             255*progress);
-      strokeWeight(this.strokeWeight);
-      fill(0, 0);
-      ellipse(this.x, this.y, r);
-    pop();
-
-    if (millis() > this.endTime) {
-      return true;
-    }
-
-    return false;
-  }
-}*/
