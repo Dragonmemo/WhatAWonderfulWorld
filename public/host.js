@@ -160,7 +160,7 @@ function nextLevel(){
 		for (let key in filteredList){
 			levelList.push(key);
 		}
-		let idx=filter.indexOf(currentSelect);
+		let idx=levelList.indexOf(currentSelect);
 		currentSelect=levelList[(idx+1)%levelList.length];
 		buttonLevel.label=currentSelect
 	}
@@ -204,7 +204,7 @@ function onButtonHostPress() {
   for (let id in game.players) {
     playCount++;
 	if (!game.players[id].status){statusReady = false}}
-  if (statusReady && playCount>1){
+  if (statusReady && playCount>1 && filteredList[currentSelect]){
     gameState = 1;
     processScript(currentSelect);
     let data = {
@@ -272,7 +272,7 @@ function draw () {
     if (gameState==-2 && indexPlayer>=0){
       showPrompt();
     }
-	if (gameState==-1){
+	if (gameState==-1 && filteredList[currentSelect]){
       showExample();
     }
   }
