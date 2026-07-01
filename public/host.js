@@ -29,7 +29,9 @@ let gui = null;
 //Gamestate : -2 = Review de la partie, -1 = lobby + review des parties précédentes si voulu, 1... = en partie
 let gameState = -1;
 let prompteur=null
-let currentSelect='Artifactory FR';
+let currentSelect='';
+let filteredList={};
+let lang="FR";
 let indexPlayer=-1
 let backgroundMusicMain, backgroundMusicGame, backgroundMusicReview;
 //Music by <a href="https://pixabay.com/users/sonican-38947841/?utm_source=link-attribution&utm_medium=referral&utm_campaign=music&utm_content=441293">Dvir Silverstone</a> from <a href="https://pixabay.com//?utm_source=link-attribution&utm_medium=referral&utm_campaign=music&utm_content=441293">Pixabay</a>
@@ -42,12 +44,12 @@ let timeOutWriting=0;
 // <----
 
 function processScript(strKey){
-  if (LOADER[strKey]){
+  if (filteredList[strKey]){
     prompteur={}
     let tempId=0
-    while (LOADER[strKey][0].slice(tempId).search(/\[/)!=-1){
-      tempId+=LOADER[strKey][0].slice(tempId).search(/\[/)+1;
-      let tempFocus=LOADER[strKey][0].slice(tempId).split(/\]/)[0];
+    while (filteredList[strKey][0].slice(tempId).search(/\[/)!=-1){
+      tempId+=filteredList[strKey][0].slice(tempId).search(/\[/)+1;
+      let tempFocus=filteredList[strKey][0].slice(tempId).split(/\]/)[0];
       prompteur[tempFocus.split("|")[0]]=[tempFocus.split("|")[1],tempFocus.split("|")[2]];
     }
   }
@@ -80,6 +82,15 @@ function setup () {
   soundEffNext.setVolume(0.3);
   soundEffWriting.setVolume(0.7);
   userStartAudio();
+  
+  buttonLang = createButton(lang, width-510, 10, 100, 100);
+	buttonLang.setStyle({
+    textSize: 40,
+    fillBg: color(130, 210, 100),
+    fillBgHover: color(100, 220, 100),
+    fillBgActive: color(70, 150, 70)
+  });
+  buttonLang.onPress = nextLang;
   
   buttonLevel = createButton(currentSelect, width-410, 10, 400, 100);
 	buttonLevel.setStyle({
@@ -123,7 +134,7 @@ function reviewContinue(){
 	  button: button.val,
 	  prompt: "Écris ton nom :"
 	}        
-    sendData('buttonHost', data);
+    sendData('Restart', data);
 	
     button.setStyle({
     textSize: 40,
@@ -145,13 +156,32 @@ function reviewContinue(){
 
 function nextLevel(){
 	if (gameState==-1){
-	let levelList=[];
-	for (let key in LOADER){
-		levelList.push(key);
+		let levelList=[];
+		for (let key in filteredList){
+			levelList.push(key);
+		}
+		let idx=filter.indexOf(currentSelect);
+		currentSelect=levelList[(idx+1)%levelList.length];
+		buttonLevel.label=currentSelect
 	}
-	let idx=levelList.indexOf(currentSelect);
-	currentSelect=levelList[(idx+1)%levelList.length];
-	buttonLevel.label=currentSelect
+}
+
+function nextLang(){
+	if (gameState==-1){
+		let idx=["FR","EN","Custom"].indexOf(lang);
+		lang=["FR","EN","Custom"][(idx+1)%3];
+		buttonLang.label=lang
+		reloadLevelsList()
+	}
+}
+
+//recuperer ce que j'ai fait sur furlist
+function reloadLevelsList(){
+	filteredList={}
+	for (let idx = 0; idx<LOADER.length; idx++){
+		if ((LOADER[idx][0]==lang || LOADER[idx][0]=="Custom") && game.currentPlayers.length>LOADER[idx][1] && (game.currentPlayers.length<LOADER[idx][2] || LOADER[idx][2]==-1)){
+			filteredList[LOADER[idx][3]]=LOADER[idx][4]
+		}
 	}
 }
 
@@ -161,7 +191,7 @@ function customLevel(){
 	let promptContents = prompt("Give the structure of your custom prompt | See tutorial : https://waww.up.railway.app/tutorial.html")
 	let promptExample = prompt("Give an example to your custom prompt | See tutorial : https://waww.up.railway.app/tutorial.html")
 	
-	LOADER[levelName]=[promptContents,promptExample];
+	LOADER[levelName]=["Custom",-1,-1,promptContents,promptExample];
 	currentSelect=levelName;
 	buttonLevel.label=currentSelect
 
@@ -182,7 +212,7 @@ function onButtonHostPress() {
 	  testValue: 2,
       prompt: prompteur[gameState][0], //générer le prompt à partir de gamestate et ce qui est sélectionné
       addition: prompteur[gameState][1],
-	  exemple: LOADER[currentSelect][1],
+	  exemple: filteredList[currentSelect][1],
 	  exID: gameState
 	}
     let tempList=[]
@@ -261,8 +291,8 @@ function printExample(strKey,id){
 
   textFont('Verdana',40);
   //je peux mettre un font ici
-  while (LOADER[strKey][1].slice(tempId).search(/\[/)!=-1){
-    words = LOADER[strKey][1].slice(tempId,tempId+LOADER[strKey][1].slice(tempId).search(/\[/)).split(' ');
+  while (filteredList[strKey][1].slice(tempId).search(/\[/)!=-1){
+    words = filteredList[strKey][1].slice(tempId,tempId+filteredList[strKey][1].slice(tempId).search(/\[/)).split(' ');
     fill(255,255,255);
     for (let i=0;i<words.length;i++){
       if (x0+textWidth(words[i]+' ')<windowWidth*0.6){
@@ -277,8 +307,8 @@ function printExample(strKey,id){
       }
     }
 
-    tempId+=LOADER[strKey][1].slice(tempId).search(/\[/)+1;
-    let tempFocus=LOADER[strKey][1].slice(tempId).split(/\]/)[0];
+    tempId+=filteredList[strKey][1].slice(tempId).search(/\[/)+1;
+    let tempFocus=filteredList[strKey][1].slice(tempId).split(/\]/)[0];
     //Jai la section de texte dans tempFocus[1] et son ID en 0
     words = tempFocus.split('|')[1].split(' ');
     if (tempFocus.split('|')[0]==String(id)){
@@ -299,7 +329,7 @@ function printExample(strKey,id){
         x0+=textWidth(words[i]+' ');
       }
     }
-    tempId+=LOADER[strKey][1].slice(tempId).search(/\]/)+1;
+    tempId+=filteredList[strKey][1].slice(tempId).search(/\]/)+1;
     
   }
   //Il devrait rester encore une section blanche qui manque après
@@ -315,8 +345,8 @@ function showExample(){
   let tempPlayerIndex;
   textFont('Verdana',40);
   //je peux mettre un font ici
-  while (LOADER[currentSelect][1].slice(tempId).search(/\[/)!=-1){
-    words = LOADER[currentSelect][1].slice(tempId,tempId+LOADER[currentSelect][1].slice(tempId).search(/\[/)).split(' ');
+  while (filteredList[currentSelect][1].slice(tempId).search(/\[/)!=-1){
+    words = filteredList[currentSelect][1].slice(tempId,tempId+filteredList[currentSelect][1].slice(tempId).search(/\[/)).split(' ');
     fill(255,255,255);
     for (let i=0;i<words.length;i++){
       if (x0+textWidth(words[i]+' ')<windowWidth*0.6){
@@ -331,8 +361,8 @@ function showExample(){
       }
     }
 
-    tempId+=LOADER[currentSelect][1].slice(tempId).search(/\[/)+1;
-    tempFocus=LOADER[currentSelect][1].slice(tempId).split(/\]/)[0];
+    tempId+=filteredList[currentSelect][1].slice(tempId).search(/\[/)+1;
+    tempFocus=filteredList[currentSelect][1].slice(tempId).split(/\]/)[0];
 	tempPlayerIndex=parseInt(tempFocus.split('|')[0])-1;
 	words = tempFocus.split('|')[1].split(' ');
 	colorMode(HSB);
@@ -351,7 +381,7 @@ function showExample(){
 		  x0+=textWidth(words[i]+' ');
 		}
 	}
-	tempId+=LOADER[currentSelect][1].slice(tempId).search(/\]/)+1;
+	tempId+=filteredList[currentSelect][1].slice(tempId).search(/\]/)+1;
     
   }
   //Il devrait rester encore une section blanche qui manque après
@@ -367,8 +397,8 @@ function showPrompt(){
   let tempPlayerIndex;
   textFont('Verdana',40);
   //je peux mettre un font ici
-  while (LOADER[currentSelect][0].slice(tempId).search(/\[|\(/)!=-1){
-    words = LOADER[currentSelect][0].slice(tempId,tempId+LOADER[currentSelect][0].slice(tempId).search(/\[|\(/)).split(' ');
+  while (filteredList[currentSelect][0].slice(tempId).search(/\[|\(/)!=-1){
+    words = filteredList[currentSelect][0].slice(tempId,tempId+filteredList[currentSelect][0].slice(tempId).search(/\[|\(/)).split(' ');
     fill(255,255,255);
     for (let i=0;i<words.length;i++){
       if (x0+textWidth(words[i]+' ')<windowWidth*0.6){
@@ -383,12 +413,12 @@ function showPrompt(){
       }
     }
 
-    tempId+=LOADER[currentSelect][0].slice(tempId).search(/\[|\(/)+1;
-    if (LOADER[currentSelect][0][tempId-1]=='('){
-      tempFocus=LOADER[currentSelect][0].slice(tempId).split(/\)/)[0];
-      tempPlayerIndex=parseInt(LOADER[currentSelect][0]
+    tempId+=filteredList[currentSelect][0].slice(tempId).search(/\[|\(/)+1;
+    if (filteredList[currentSelect][0][tempId-1]=='('){
+      tempFocus=filteredList[currentSelect][0].slice(tempId).split(/\)/)[0];
+      tempPlayerIndex=parseInt(filteredList[currentSelect][0]
         .split("|"+tempFocus+"]")[0]
-        .split('[')[LOADER[currentSelect][0].split("|"+tempFocus+"]")[0].split('[').length-1]
+        .split('[')[filteredList[currentSelect][0].split("|"+tempFocus+"]")[0].split('[').length-1]
         .split('|')[0])-1;
       try{
 		words = game.players[game.currentPlayers[(indexPlayer+tempPlayerIndex)%game.currentPlayers.length]]
@@ -410,10 +440,10 @@ function showPrompt(){
           x0+=textWidth(words[i]+' ');
         }
       }
-      tempId+=LOADER[currentSelect][0].slice(tempId).search(/\)/)+1;
+      tempId+=filteredList[currentSelect][0].slice(tempId).search(/\)/)+1;
     }
     else{
-      tempFocus=LOADER[currentSelect][0].slice(tempId).split(/\]/)[0];
+      tempFocus=filteredList[currentSelect][0].slice(tempId).split(/\]/)[0];
       tempPlayerIndex=parseInt(tempFocus.split('|')[0])-1;
 		try{
 			words = game.players[game.currentPlayers[(indexPlayer+tempPlayerIndex)%game.currentPlayers.length]]
@@ -434,7 +464,7 @@ function showPrompt(){
           x0+=textWidth(words[i]+' ');
         }
       }
-      tempId+=LOADER[currentSelect][0].slice(tempId).search(/\]/)+1;
+      tempId+=filteredList[currentSelect][0].slice(tempId).search(/\]/)+1;
     }
     
   }
@@ -517,7 +547,7 @@ function processButton (data) {
 			  button: button.val,
 			  prompt: prompteur[gameState][0],
 			  addition: prompteur[gameState][1],
-			  exemple: LOADER[currentSelect][1],
+			  exemple: filteredList[currentSelect][1],
 			  exID: gameState
 			}
 			sendData('buttonHost', data);
@@ -572,7 +602,7 @@ function processButton (data) {
 			  prompt: prompteur[gameState][0],
 			  addition: prompteur[gameState][1],
 			  couleur: game.players[data.id].color,
-			  exemple: LOADER[currentSelect][1],
+			  exemple: filteredList[currentSelect][1],
 			  exID: gameState
 			}
 			sendData('reload', data2);
@@ -596,7 +626,7 @@ function processButton (data) {
 			  button: button.val,
 			  prompt: prompteur[gameState][0],
 			  addition: prompteur[gameState][1],
-			  exemple: LOADER[currentSelect][1],
+			  exemple: filteredList[currentSelect][1],
 			  exID: gameState
 			}
 			sendData('buttonHost', data);
@@ -678,6 +708,7 @@ class Game {
 		print(this.players[id].id + " added.");
 		this.id++;
 		this.numPlayers++;
+		reloadLevelsList();
 	  }
 	  else{
 		this.tempPlayers[id] = createSprite();
@@ -718,6 +749,7 @@ class Game {
 		  this.players[id].disconnected=true;
 	  }
 	this.numPlayers--;
+	reloadLevelsList();
   }
 
   checkId (id) {

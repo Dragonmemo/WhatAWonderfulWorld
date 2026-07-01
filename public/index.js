@@ -17,6 +17,7 @@ let writeBox = null;
 let writeBox2 = null;
 let promptElement = null;
 let testValue=-1;
+let savedPseudo='';
 
 // Initialize Game related variables
 let playerColor;
@@ -92,6 +93,16 @@ function onReceiveData (data) {
 		playerColor=data.couleur;
 		
   }
+  if (data.type === 'Restart') {
+	testValue=-1;
+    promptElement.innerHTML=data.prompt;
+    writeBox.value=savedPseudo;
+    writeBox2.setAttribute("hidden",true);
+    writeBox2.value=null;
+    onButtonPress();
+	//afficher l'exemple
+	showExample('', 0)
+  }
 }
 
 ////////////
@@ -157,6 +168,7 @@ function onButtonPress() {
     document.getElementById("story").setAttribute("disabled", "true");
     button.innerHTML = "Not Ready ?";
   }
+	if (testValue==-1){savedPseudo=writeBox.value}
   sendData('button', data);
 
   
