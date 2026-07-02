@@ -183,7 +183,7 @@ function reloadLevelsList(){
 		playCount++;
 	}
 	for (let idx = 0; idx<LOADER.length; idx++){
-		if ((LOADER[idx][0]==lang || LOADER[idx][0]=="Custom") && playCount>LOADER[idx][1] && (playCount<LOADER[idx][2] || LOADER[idx][2]==-1)){
+		if ((LOADER[idx][0]==lang || LOADER[idx][0]=="Custom") && playCount>=LOADER[idx][1] && (playCount<=LOADER[idx][2] || LOADER[idx][2]==-1)){
 			filteredList[LOADER[idx][3]]=LOADER[idx][4]
 		}
 	}
