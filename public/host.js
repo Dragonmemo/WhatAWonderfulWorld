@@ -178,8 +178,12 @@ function nextLang(){
 //recuperer ce que j'ai fait sur furlist
 function reloadLevelsList(){
 	filteredList={}
+	let playCount=0;
+	for (let id in game.players) {
+		playCount++;
+	}
 	for (let idx = 0; idx<LOADER.length; idx++){
-		if ((LOADER[idx][0]==lang || LOADER[idx][0]=="Custom") && game.currentPlayers.length>LOADER[idx][1] && (game.currentPlayers.length<LOADER[idx][2] || LOADER[idx][2]==-1)){
+		if ((LOADER[idx][0]==lang || LOADER[idx][0]=="Custom") && playCount>LOADER[idx][1] && (playCount<LOADER[idx][2] || LOADER[idx][2]==-1)){
 			filteredList[LOADER[idx][3]]=LOADER[idx][4]
 		}
 	}
