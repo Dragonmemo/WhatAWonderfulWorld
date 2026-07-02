@@ -64,4 +64,4 @@ const LOADER = [
 	  "I just lost myself[1|Give a place and its adverb :|], I desperately need to[2|Give an action to do (infinitive) :|]and the only way for me to do it is by using[3|Give an object :|]",
 	  "I just lost myself[1|in an IKEA], I desperately need to[2|slice a pumpkin]and the only way for me to do it is by using[3|a fishing rod]"
 	]]
-};
+];
