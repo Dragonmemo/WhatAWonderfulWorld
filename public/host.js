@@ -32,6 +32,7 @@ let prompteur=null
 let currentSelect='';
 let filteredList={};
 let lang="FR";
+let musicVal=1;
 let indexPlayer=-1
 let backgroundMusicMain, backgroundMusicGame, backgroundMusicReview;
 //Music by <a href="https://pixabay.com/users/sonican-38947841/?utm_source=link-attribution&utm_medium=referral&utm_campaign=music&utm_content=441293">Dvir Silverstone</a> from <a href="https://pixabay.com//?utm_source=link-attribution&utm_medium=referral&utm_campaign=music&utm_content=441293">Pixabay</a>
@@ -74,14 +75,18 @@ function setup () {
   
   game = new Game(width, height);
   
-  backgroundMusicMain.play();
-  backgroundMusicMain.loop();
-  backgroundMusicMain.setVolume(0.1);
-  backgroundMusicGame.setVolume(0.1);
-  backgroundMusicReview.setVolume(0.1);
-  soundEffNext.setVolume(0.3);
-  soundEffWriting.setVolume(0.7);
-  userStartAudio();
+	backgroundMusicMain.play();
+	backgroundMusicMain.loop();
+	backgroundMusicGame.play();
+	backgroundMusicGame.loop();
+	backgroundMusicReview.play();
+	backgroundMusicReview.loop();
+	backgroundMusicMain.setVolume(0.1*musicVal);
+	backgroundMusicGame.setVolume(0);
+	backgroundMusicReview.setVolume(0);
+	soundEffNext.setVolume(0.3);
+	soundEffWriting.setVolume(0.7);
+	userStartAudio();
   
   buttonLang = createButton(lang, width-510, 10, 100, 100);
 	buttonLang.setStyle({
@@ -91,6 +96,15 @@ function setup () {
     fillBgActive: color(70, 150, 70)
   });
   buttonLang.onPress = nextLang;
+  
+  buttonMusic = createButton("On", width-110, height-210, 100, 100);
+	buttonMusic.setStyle({
+    textSize: 40,
+    fillBg: color(130, 210, 100),
+    fillBgHover: color(100, 220, 100),
+    fillBgActive: color(70, 150, 70)
+  });
+  buttonMusic.onPress = changeMusic;
   
   buttonLevel = createButton(currentSelect, width-410, 10, 400, 100);
 	buttonLevel.setStyle({
@@ -126,9 +140,8 @@ function reviewContinue(){
   if (indexPlayer==game.currentPlayers.length){
     gameState=-1
 	
-	backgroundMusicReview.stopAll();
-	backgroundMusicMain.play();
-	backgroundMusicMain.loop();
+	backgroundMusicReview.setVolume(0);
+	backgroundMusicMain.setVolume(0.1*musicVal);
 	
 	let data = {
 	  button: button.val,
@@ -175,6 +188,28 @@ function nextLang(){
 	}
 }
 
+function changeMusic(){
+	musicVal=1-musicVal;
+	if (musicVal==1){
+		buttonMusic.label="On"
+		switch (gameState){
+			case -1:
+				backgroundMusicMain.setVolume(0.1*musicVal);
+				break;
+			case -2:
+				backgroundMusicReview.setVolume(0.1*musicVal);
+				break;
+			default:
+				backgroundMusicGame.setVolume(0.1*musicVal);
+		}
+	}
+	else {
+		buttonMusic.label="Off"
+		backgroundMusicMain.setVolume(0);
+		backgroundMusicGame.setVolume(0);
+		backgroundMusicReview.setVolume(0);
+	}
+}
 //recuperer ce que j'ai fait sur furlist
 function reloadLevelsList(){
 	filteredList={}
@@ -232,10 +267,8 @@ function onButtonHostPress() {
       game.currentPlayers.push(tempList.splice(n,1)[0])
     }
 	
-	backgroundMusicMain.stopAll();
-	backgroundMusicMain.setLoop(false);
-	backgroundMusicGame.play();
-	backgroundMusicGame.loop();
+	backgroundMusicMain.setVolume(0);
+	backgroundMusicGame.setVolume(0.1*musicVal);
 	
 	soundEffNext.play();
 	soundEffNext.setLoop(false);
@@ -567,9 +600,8 @@ function processButton (data) {
 				}
 			}
 				
-			backgroundMusicGame.stopAll();
-			backgroundMusicReview.play();
-			backgroundMusicReview.loop();
+			backgroundMusicGame.setVolume(0);
+			backgroundMusicReview.setVolume(0.1*musicVal);
 			
 			button.onPress=reviewContinue;
 
@@ -646,9 +678,8 @@ function processButton (data) {
 				}
 			}
 				
-			backgroundMusicGame.stopAll();
-			backgroundMusicReview.play();
-			backgroundMusicReview.loop();
+			backgroundMusicGame.setVolume(0);
+			backgroundMusicReview.setVolume(0.1*musicVal);
 			
 			button.onPress=reviewContinue;
 
