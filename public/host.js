@@ -69,14 +69,15 @@ function processScript(strKey){
 function preload() {
   setupHost();
   soundFormats("mp3")
+}
+
+function setup () {
   backgroundMusicMain=loadSound("/music/comedy-piano");
   backgroundMusicGame=loadSound("/music/silly-escapade");
   backgroundMusicReview=loadSound("/music/positive-world");
   soundEffNext=loadSound("/music/ping");
   soundEffWriting=loadSound("/music/pencil");
-}
-
-function setup () {
+  
   createCanvas(windowWidth, windowHeight);
   gui = createGui();
   // Host/Game setup here. ---->
