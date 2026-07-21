@@ -43,14 +43,14 @@ let soundEffWriting, soundEffNext;
 //Sound Effect by <a href="https://pixabay.com/users/freesound_community-46691455/?utm_source=link-attribution&utm_medium=referral&utm_campaign=music&utm_content=84424">freesound_community</a> from <a href="https://pixabay.com//?utm_source=link-attribution&utm_medium=referral&utm_campaign=music&utm_content=84424">Pixabay</a>
 let timeOutWriting=0;
 // <----
-let qrcode = new QRCode("test", {
+/*let qrcode = new QRCode("test", {
     text: serverIp+"/?=",
     width: 128,
     height: 128,
     colorDark : "#000000",
     colorLight : "#ffffff",
     correctLevel : QRCode.CorrectLevel.H
-})
+})*/
 
 function processScript(strKey){
   if (filteredList[strKey]){
