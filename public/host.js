@@ -66,6 +66,7 @@ function preload() {
   backgroundMusicReview=loadSound("/music/positive-world");
   soundEffNext=loadSound("/music/ping");
   soundEffWriting=loadSound("/music/pencil");
+   displayQR("QRDrop");
 }
 
 function setup () {
@@ -302,7 +303,6 @@ function draw () {
     // <----
     
     // Display server address
-    displayQR("QRDrop");
     if (prompteur && prompteur[gameState]){
       printExample(currentSelect,gameState)
     }
