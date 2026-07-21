@@ -89,6 +89,15 @@ function displayAddress() {
   pop();
 }
 
+// Displays server QR Code in lower left of screen
+function displayQR() {
+  push();
+    fill(255);
+    textSize(50);
+    text(serverIp+"/?="+roomId, 10, height-50);
+  pop();
+}
+
 ////////////
 // CLIENT
 
