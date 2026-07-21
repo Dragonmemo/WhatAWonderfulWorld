@@ -90,12 +90,17 @@ function displayAddress() {
 }
 
 // Displays server QR Code in lower left of screen
-function displayQR() {
-  push();
-    fill(255);
-    textSize(50);
-    text(serverIp+"/?="+roomId, 10, height-50);
-  pop();
+function displayQR(objName) {
+  //push();
+    //fill(255);
+    //textSize(50);
+    //text(serverIp+"/?="+roomId, 10, height-50);
+	new QRCode(objName, {
+		text: serverIp+"/?="+roomId,
+		width: 128,
+		height: 128
+	});
+	//pop();
 }
 
 ////////////
