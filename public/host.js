@@ -432,8 +432,8 @@ function showPrompt(){
     fill(0);
     textAlign(LEFT, TOP)
     
-	textFont(fontCaveat,100);
-	text("Biggest Losers !", width*3/4+10, 100);
+	textFont(fontCaveat,50);
+	text("Biggest Losers !", width*3/4+10, 50);
     
 	textFont(fontRockSalt,20);
     //je peux mettre un font ici
@@ -474,7 +474,7 @@ function showPrompt(){
         if (boolPostItToRemove){
             colorMode(HSB);
             arrache_me_senpai.push(
-                new PostIt(width*7/8+textWidth(
+                new PostIt(width*3/4+10+textWidth(
                     game.players[game.currentPlayers[(indexPlayer+tempPlayerIndex)%game.currentPlayers.length]].displayName
                 )/2,180+60*tempPlayerIndex, textWidth(
                     game.players[game.currentPlayers[(indexPlayer+tempPlayerIndex)%game.currentPlayers.length]].displayName
