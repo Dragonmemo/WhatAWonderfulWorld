@@ -109,7 +109,7 @@ function setup () {
   buttonSave = new PostIt(width-160,height-60,100,100,"📸",()=>{save(Date().slice(0,24)+'.png')},'None', 'rgb(75,75,75)', 'rgb(175,175,175)',"Courier New")
   buttonSave.hiddenStatus=true;
   bgCdvr= new PostIt(width/2, height*5/12, width/2, height*5/6, "", ()=>{}, 'None', 'None', 'None', "Courier New")
-  bgOther= new PostIt(width*7/8, height/2, width/4, height*2/3, "", ()=>{}, 'None', 'None', 'None', "fontRockSalt")
+  bgOther= new PostIt(width*7/8, height*5/12, width/4, height*5/6, "", ()=>{}, 'None', 'None', 'None', "fontRockSalt")
   bgOther.hiddenStatus=true;
   // <----
 }
