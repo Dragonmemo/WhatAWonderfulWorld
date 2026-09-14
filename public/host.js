@@ -335,9 +335,9 @@ function printExample(strKey,id){
 	fill(0);        
     textAlign(LEFT, TOP)
 	textFont(fontCaveat,100);
-	text("Exemple :", width/4, 100);
+	text("Exemple :", width/4, 50);
 	
-	textFont(fontRockSalt,40);
+	textFont(fontRockSalt,20);
 	//je peux mettre un font ici
 	while (filteredList[strKey][1].slice(tempId).search(/\[/)!=-1){
     words = filteredList[strKey][1].slice(tempId,tempId+filteredList[strKey][1].slice(tempId).search(/\[/)).split(' ');
