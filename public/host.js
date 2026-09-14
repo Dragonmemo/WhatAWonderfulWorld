@@ -30,6 +30,7 @@ let gui = null;
 //Gamestate : -2 = Review de la partie, -1 = lobby + review des parties précédentes si voulu, 1... = en partie
 let gameState = -1;
 let prompteur=null
+let capture=false;
 let currentSelect='';
 let filteredList={};
 let lang="FR";
@@ -106,10 +107,10 @@ function setup () {
   buttonLevel = new PostIt(width-210, 60, 400, 100, currentSelect, nextLevel, 'None', 'rgb(75,75,75)', 'rgb(175,175,175)', fontRockSalt)
   buttonNewLevel = new PostIt(width-210, 160, 400, 100, "Custom prompt", customLevel, 'None', 'rgb(75,75,75)', 'rgb(175,175,175)', fontRockSalt)
   buttonHost = new PostIt(width/2, height-60, 400, 100, "Start", onButtonHostPress, 'rgb(120,255,175)', 'rgb(60,127,87)', 'rgb(95,175,135)', fontRockSalt)
-  buttonSave = new PostIt(width-160,height-60,100,100,"📸",()=>{save(Date().slice(0,24)+'.png')},'None', 'rgb(75,75,75)', 'rgb(175,175,175)',"Courier New")
+  buttonSave = new PostIt(width-160,height-60,100,100,"📸",()=>{capture=true},'None', 'rgb(75,75,75)', 'rgb(175,175,175)',"Courier New")
   buttonSave.hiddenStatus=true;
   bgCdvr= new PostIt(width/2, height*5/12, width/2, height*5/6, "", ()=>{}, 'None', 'None', 'None', "Courier New")
-  bgOther= new PostIt(width*7/8, height*5/12, width/4, height*5/6, "", ()=>{}, 'None', 'None', 'None', "fontRockSalt")
+  bgOther= new PostIt(width*7/8, height*5/12, width/4, height*5/6, "", ()=>{}, 'None', 'None', 'None', fontRockSalt)
   bgOther.hiddenStatus=true;
   // <----
 }
@@ -321,7 +322,10 @@ function draw () {
             idx--
         }
     }
-	
+	if (capture){
+        save(Date().slice(0,24)+'.png')
+        capture= false
+    }
   }
 }
 
