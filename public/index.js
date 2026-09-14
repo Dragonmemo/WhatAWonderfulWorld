@@ -14,7 +14,6 @@ let gui         = null;
 let button      = null;
 
 let writeBox = null;
-let writeBox2 = null;
 let promptElement = null;
 let testValue=-1;
 let savedPseudo='';
@@ -66,13 +65,6 @@ function onReceiveData (data) {
 	  testValue=data.testValue;
     promptElement.innerHTML=data.prompt;
     writeBox.value=null;
-    if (data.addition){
-      writeBox2.removeAttribute("hidden")
-    }
-    else{
-      writeBox2.setAttribute("hidden",true);
-    }
-    writeBox2.value=null;
     onButtonPress();
 	//afficher l'exemple
 	showExample(data.exemple, data.exID)
@@ -81,13 +73,6 @@ function onReceiveData (data) {
 		testValue=data.testValue;
 		promptElement.innerHTML=data.prompt;
 		writeBox.value=null;
-		if (data.addition){
-		  writeBox2.removeAttribute("hidden")
-		}
-		else{
-		  writeBox2.setAttribute("hidden",true);
-		}
-		writeBox2.value=null;
 		onButtonPress();
 		//Et on modifie la couleur du bouton/interface
 		playerColor=data.couleur;
@@ -97,8 +82,6 @@ function onReceiveData (data) {
 	testValue=-1;
     promptElement.innerHTML=data.prompt;
     writeBox.value=savedPseudo;
-    writeBox2.setAttribute("hidden",true);
-    writeBox2.value=null;
     onButtonPress();
 	//afficher l'exemple
 	showExample('', 0)
@@ -141,8 +124,6 @@ function setupUI() {
   button.onclick = onButtonPress;
   writeBox= document.getElementById("story");
   writeBox.addEventListener("input", onTextBoxChange);
-  writeBox2= document.getElementById("adder");
-  writeBox2.addEventListener("input", onTextBoxChange);
   promptElement =  document.getElementById("prompt");
   promptElement.innerHTML="Écris ton nom :";
 }
@@ -176,8 +157,7 @@ function onButtonPress() {
 
 function onTextBoxChange(){
   let data = {
-    contenu: writeBox.value,
-    contenu2: writeBox2.value
+    contenu: writeBox.value
   }
 
   sendData('txtChange', data);

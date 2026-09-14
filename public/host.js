@@ -15,9 +15,10 @@ Run http-server -c-1 -p80 to start server on open port 80.
 // Network Settings
 // const serverIp      = 'https://yourservername.herokuapp.com';
 // const serverIp      = 'https://yourprojectname.glitch.me';
-const serverIp      = 'waww.up.railway.app';
+const serverIp      = '127.0.0.1';
+//const serverIp      = 'waww.up.railway.app';
 const serverPort    = '3000';
-const local         = false;   // true if running locally, false
+const local         = true;   // true if running locally, false
                               // if running on remote server
 
 // Global variables here. ---->
@@ -42,6 +43,10 @@ let soundEffWriting, soundEffNext;
 //Sound Effect by <a href="https://pixabay.com/users/freesound_community-46691455/?utm_source=link-attribution&utm_medium=referral&utm_campaign=music&utm_content=82822">freesound_community</a> from <a href="https://pixabay.com/sound-effects//?utm_source=link-attribution&utm_medium=referral&utm_campaign=music&utm_content=82822">Pixabay</a>
 //Sound Effect by <a href="https://pixabay.com/users/freesound_community-46691455/?utm_source=link-attribution&utm_medium=referral&utm_campaign=music&utm_content=84424">freesound_community</a> from <a href="https://pixabay.com//?utm_source=link-attribution&utm_medium=referral&utm_campaign=music&utm_content=84424">Pixabay</a>
 let timeOutWriting=0;
+let imgBG, imgButton, imgButtonLowRes, imgCenter, imgBoulette;
+let mesBoulettes=[];
+let arrache_me_senpai=[];
+let fontCaveat, fontRockSalt;
 // <----
 
 function processScript(strKey){
@@ -66,7 +71,14 @@ function preload() {
   backgroundMusicReview=loadSound("/music/positive-world");
   soundEffNext=loadSound("/music/ping");
   soundEffWriting=loadSound("/music/pencil");
-   displayQR("QRDrop");
+  imgBG=loadImage("/images/BGTableau.png")
+  imgButton=loadImage("/images/ButtonPostIt.png")
+  imgButtonLowRes=loadImage("/images/ButtonPostItLR.png")
+  imgCenter=loadImage("/images/ButtonPostIt.png")
+  imgBoulette=loadImage("/images/Paper.png")
+  displayQR("QRDrop");
+  fontCaveat=loadFont("/images/Caveat-Regular.ttf")
+  fontRockSalt=loadFont("/images/RockSalt-Regular.ttf")
 }
 
 function setup () {
@@ -89,102 +101,78 @@ function setup () {
 	soundEffWriting.setVolume(0.7);
 	userStartAudio();
   
-  buttonLang = createButton(lang, width-510, 10, 100, 100);
-	buttonLang.setStyle({
-    textSize: 40,
-    fillBg: color(130, 210, 100),
-    fillBgHover: color(100, 220, 100),
-    fillBgActive: color(70, 150, 70)
-  });
-  buttonLang.onPress = nextLang;
-  
-  buttonMusic = createButton("On", width-110, height-210, 100, 100);
-	buttonMusic.setStyle({
-    textSize: 40,
-    fillBg: color(130, 210, 100),
-    fillBgHover: color(100, 220, 100),
-    fillBgActive: color(70, 150, 70)
-  });
-  buttonMusic.onPress = changeMusic;
-  
-  buttonLevel = createButton(currentSelect, width-410, 10, 400, 100);
-	buttonLevel.setStyle({
-    textSize: 40,
-    fillBg: color(130, 210, 100),
-    fillBgHover: color(100, 220, 100),
-    fillBgActive: color(70, 150, 70)
-  });
-  buttonLevel.onPress = nextLevel;
-  
-  buttonNewLevel = createButton("Custom prompt", width-410, 110, 400, 100);
-	buttonNewLevel.setStyle({
-    textSize: 40,
-    fillBg: color(130, 210, 100),
-    fillBgHover: color(100, 220, 100),
-    fillBgActive: color(70, 150, 70)
-  });
-  buttonNewLevel.onPress = customLevel;
-  
-  button = createButton("Start", width-410, height-110, 400, 100);
-    button.setStyle({
-    textSize: 40,
-    fillBg: color(130, 210, 100),
-    fillBgHover: color(100, 220, 100),
-    fillBgActive: color(70, 150, 70)
-  });
-  button.onPress = onButtonHostPress;
+  buttonLang = new PostIt(width-460, 60, 100, 100, lang, nextLang, 'rgb(255,255,200)', 'rgb(75,75,50)', 'rgb(175,175,135)', fontRockSalt)
+  buttonMusic = new PostIt(width-60, height-60, 100, 100, "🎵", changeMusic, 'None', 'rgb(75,75,75)', 'rgb(175,175,175)', "Courier New")
+  buttonLevel = new PostIt(width-210, 60, 400, 100, currentSelect, nextLevel, 'None', 'rgb(75,75,75)', 'rgb(175,175,175)', fontRockSalt)
+  buttonNewLevel = new PostIt(width-210, 160, 400, 100, "Custom prompt", customLevel, 'None', 'rgb(75,75,75)', 'rgb(175,175,175)', fontRockSalt)
+  buttonHost = new PostIt(width/2, height-60, 400, 100, "Start", onButtonHostPress, 'rgb(120,255,175)', 'rgb(60,127,87)', 'rgb(95,175,135)', fontRockSalt)
+  buttonSave = new PostIt(width-160,height-60,100,100,"📸",()=>{save(Date().slice(0,24)+'.png')},'None', 'rgb(75,75,75)', 'rgb(175,175,175)',"Courier New")
+  buttonSave.hiddenStatus=true;
+  bgCdvr= new PostIt(width/2, height*5/12, width/2, height*5/6, "", ()=>{}, 'None', 'None', 'None', "Courier New")
+  bgOther= new PostIt(width*7/8, height/2, width/4, height*2/3, "", ()=>{}, 'None', 'None', 'None', "fontRockSalt")
+  bgOther.hiddenStatus=true;
   // <----
 }
 
 function reviewContinue(){
-  indexPlayer++;
-  if (indexPlayer==game.currentPlayers.length){
-    gameState=-1
-	
-	backgroundMusicReview.setVolume(0);
-	backgroundMusicMain.setVolume(0.1*musicVal);
-	
-	let data = {
-	  button: button.val,
-	  prompt: "Écris ton nom :"
-	}        
-    sendData('Restart', data);
-	
-    button.setStyle({
-    textSize: 40,
-    fillBg: color(130, 210, 100),
-    fillBgHover: color(100, 220, 100),
-    fillBgActive: color(70, 150, 70)
-    });
-    button.onPress = onButtonHostPress;
-    button.label="Start";
-	
-	//On remet tous les joueurs en attente dans la liste des joueurs actifs
-	for (let id in game.tempPlayers) {
-	  game.add(id);
-	  game.players[id].color=game.tempPlayers[id].color;
-	}
-	game.tempPlayers={};
-  }
+    arrache()
+    indexPlayer++;
+	arrache()
+    if (indexPlayer==game.currentPlayers.length){
+        gameState=-1
+        backgroundMusicReview.setVolume(0);
+        backgroundMusicMain.setVolume(0.1*musicVal);
+        
+        let data = {
+            button: 1,
+            prompt: "Écris ton nom :"
+        }        
+        sendData('Restart', data);
+        
+        buttonHost.func = onButtonHostPress;
+        buttonHost.content="Start";
+        buttonHost.throwStay();
+        buttonHost.hiddenStatus=false;
+        buttonLang.hiddenStatus=false;
+        buttonLevel.hiddenStatus=false;
+        buttonNewLevel.hiddenStatus=false;
+        buttonSave.throwAway();
+        bgCdvr.throwStay()
+        bgOther.throwStay()
+    
+    
+        //On remet tous les joueurs en attente dans la liste des joueurs actifs
+        for (let id in game.tempPlayers) {
+            game.add(id);
+            game.players[id].color=game.tempPlayers[id].color;
+        }
+        game.tempPlayers={};
+    }
 }
 
 function nextLevel(){
 	if (gameState==-1){
+        arrache()
 		let levelList=[];
 		for (let key in filteredList){
 			levelList.push(key);
 		}
 		let idx=levelList.indexOf(currentSelect);
 		currentSelect=levelList[(idx+1)%levelList.length];
-		buttonLevel.label=currentSelect
+		buttonLevel.content=currentSelect
+        buttonLevel.throwStay();
+        bgCdvr.throwStay();
 	}
 }
 
 function nextLang(){
+    arrache()
 	if (gameState==-1){
 		let idx=["FR","EN","Custom"].indexOf(lang);
 		lang=["FR","EN","Custom"][(idx+1)%3];
-		buttonLang.label=lang
+		buttonLang.content=lang
+		buttonLang.throwStay()
+        bgCdvr.throwStay()
 		reloadLevelsList()
 	}
 }
@@ -192,7 +180,8 @@ function nextLang(){
 function changeMusic(){
 	musicVal=1-musicVal;
 	if (musicVal==1){
-		buttonMusic.label="On"
+		buttonMusic.content="🎵"
+        buttonMusic.throwStay();
 		switch (gameState){
 			case -1:
 				backgroundMusicMain.setVolume(0.1*musicVal);
@@ -205,7 +194,8 @@ function changeMusic(){
 		}
 	}
 	else {
-		buttonMusic.label="Off"
+		buttonMusic.content="🔇"
+        buttonMusic.throwStay();
 		backgroundMusicMain.setVolume(0);
 		backgroundMusicGame.setVolume(0);
 		backgroundMusicReview.setVolume(0);
@@ -226,14 +216,16 @@ function reloadLevelsList(){
 }
 
 function customLevel(){
+    arrache()
 	if (gameState==-1){
-	let levelName = prompt("Give a name to your custom prompt")
-	let promptContents = prompt("Give the structure of your custom prompt | See tutorial : https://waww.up.railway.app/tutorial.html")
-	let promptExample = prompt("Give an example to your custom prompt | See tutorial : https://waww.up.railway.app/tutorial.html")
-	
-	LOADER[levelName]=["Custom",-1,-1,promptContents,promptExample];
-	currentSelect=levelName;
-	buttonLevel.label=currentSelect
+        let levelName = prompt("Give a name to your custom prompt")
+        let promptContents = prompt("Give the structure of your custom prompt | See tutorial : https://waww.up.railway.app/tutorial.html")
+        let promptExample = prompt("Give an example to your custom prompt | See tutorial : https://waww.up.railway.app/tutorial.html")
+        
+        LOADER[levelName]=["Custom",-1,-1,promptContents,promptExample];
+        currentSelect=levelName;
+        buttonLevel.content=currentSelect
+        buttonLevel.throwStay();
 
 	}
 }
@@ -246,12 +238,12 @@ function onButtonHostPress() {
 	if (!game.players[id].status){statusReady = false}}
   if (statusReady && playCount>1 && filteredList[currentSelect]){
     gameState = 1;
+    arrache()
     processScript(currentSelect);
     let data = {
-      button: button.val,
+      button: 1,
 	  testValue: 2,
-      prompt: prompteur[gameState][0], //générer le prompt à partir de gamestate et ce qui est sélectionné
-      addition: prompteur[gameState][1],
+      prompt: prompteur[gameState][0],
 	  exemple: filteredList[currentSelect][1],
 	  exID: gameState
 	}
@@ -274,13 +266,10 @@ function onButtonHostPress() {
 	soundEffNext.play();
 	soundEffNext.setLoop(false);
 	
-    button.onPress=null;
-    button.label="In Game"
-    button.setStyle({
-    fillBg: color(100, 100, 100),
-    fillBgHover: color(100, 100, 100),
-    fillBgActive: color(100, 100, 100)
-  });
+    buttonHost.throwAway();
+	buttonLang.throwAway();
+	buttonLevel.throwAway();
+	buttonNewLevel.throwAway();
   }
 }
 
@@ -289,20 +278,33 @@ function windowResized() {
 }
 
 function draw () {
-  background(15);
+	background(imgBG);
+	//console.log(buttonLang.mouseIsPressed)
 
   if(isHostConnected(display=true)) {
     // Host/Game draw here. --->
     drawGui();
-    // Display player IDs in top left corner
+    bgCdvr.update()
+    bgOther.update()
+	buttonLang.update()
+	buttonMusic.update()
+	buttonLevel.update()
+	buttonNewLevel.update()
+	buttonHost.update()
+    buttonSave.update()
+	// Display player IDs in top left corner
+	image(imgButton,0, 0, width/4, height*5/6)
     game.printPlayerIds(5, 20);
-
+	
     // Update and draw game objects
-    game.draw();
+    //game.draw();
 
     // <----
     
     // Display server address
+    for (var idx = 0; idx< arrache_me_senpai.length; idx++){
+        arrache_me_senpai[idx].update();
+    }
     if (prompteur && prompteur[gameState]){
       printExample(currentSelect,gameState)
     }
@@ -312,59 +314,57 @@ function draw () {
 	if (gameState==-1 && filteredList[currentSelect]){
       showExample();
     }
+    for (var idx = 0; idx< mesBoulettes.length; idx++){
+        mesBoulettes[idx].draw()
+        if (mesBoulettes[idx].y>width+300){
+            delete mesBoulettes.splice(idx,1)[0]
+            idx--
+        }
+    }
+	
   }
 }
 
 function printExample(strKey,id){
-  noStroke();
-	let x0=0;
-  let y0=0;
+	noStroke();
+	let x0=10;
+	let y0=0;
 	let tempId=0;
-  let words=null;
-  
-  fill(255,0,0);
-  textFont('Verdana',100);
-  text("Exemple :", windowWidth*0.1, 100);
-
-  textFont('Verdana',40);
-  //je peux mettre un font ici
-  while (filteredList[strKey][1].slice(tempId).search(/\[/)!=-1){
+	let words=null;
+    let boolPostItToRemove=(arrache_me_senpai.length==0)
+	fill(0);        
+    textAlign(LEFT, TOP)
+	textFont(fontCaveat,100);
+	text("Exemple :", width/4, 100);
+	
+	textFont(fontRockSalt,40);
+	//je peux mettre un font ici
+	while (filteredList[strKey][1].slice(tempId).search(/\[/)!=-1){
     words = filteredList[strKey][1].slice(tempId,tempId+filteredList[strKey][1].slice(tempId).search(/\[/)).split(' ');
-    fill(255,255,255);
+    fill(0);
     for (let i=0;i<words.length;i++){
-      if (x0+textWidth(words[i]+' ')<windowWidth*0.6){
-        text(words[i],windowWidth*0.1+x0,160+y0);
+        if (x0+textWidth(words[i]+' ')>=width/2){
+            x0=10;
+            y0+=60;
+        }
+        text(words[i],width/4+x0,160+y0);
         x0+=textWidth(words[i]+' ');
-      }
-      else {
-        x0=0;
-        y0+=60;
-        text(words[i],windowWidth*0.1+x0,160+y0);
-        x0+=textWidth(words[i]+' ');
-      }
     }
 
     tempId+=filteredList[strKey][1].slice(tempId).search(/\[/)+1;
     let tempFocus=filteredList[strKey][1].slice(tempId).split(/\]/)[0];
     //Jai la section de texte dans tempFocus[1] et son ID en 0
     words = tempFocus.split('|')[1].split(' ');
-    if (tempFocus.split('|')[0]==String(id)){
-      fill(255,0,0);
-    }
-    else{
-      fill(255,255,255);
-    }
     for (let i=0;i<words.length;i++){
-      if (x0+textWidth(words[i]+' ')<windowWidth*0.6){
-        text(words[i],windowWidth*0.1+x0,160+y0);
+        if (x0+textWidth(words[i]+' ')>=width/2){
+            x0=10;
+            y0+=60;
+        }
+        if (boolPostItToRemove && tempFocus.split('|')[0]==String(id)){
+            arrache_me_senpai.push(new PostIt(width/4+x0+textWidth(words[i])/2,180+y0, textWidth(words[i])+4, 44, "", ()=>{}, 'rgb(255,175,175)', 'rgb(255,175,175)', 'rgb(255,175,175)', "Courier New"))
+        }
+        text(words[i],width/4+x0,160+y0);
         x0+=textWidth(words[i]+' ');
-      }
-      else {
-        x0=0;
-        y0+=60;
-        text(words[i],windowWidth*0.1+x0,160+y0);
-        x0+=textWidth(words[i]+' ');
-      }
     }
     tempId+=filteredList[strKey][1].slice(tempId).search(/\]/)+1;
     
@@ -373,139 +373,130 @@ function printExample(strKey,id){
 }
 
 function showExample(){
-  noStroke();
-	let x0=0;
-  let y0=0;
-	let tempId=0;
-  let words=null;
-  let tempFocus;
-  let tempPlayerIndex;
-  textFont('Verdana',40);
-  //je peux mettre un font ici
-  while (filteredList[currentSelect][1].slice(tempId).search(/\[/)!=-1){
-    words = filteredList[currentSelect][1].slice(tempId,tempId+filteredList[currentSelect][1].slice(tempId).search(/\[/)).split(' ');
-    fill(255,255,255);
-    for (let i=0;i<words.length;i++){
-      if (x0+textWidth(words[i]+' ')<windowWidth*0.6){
-        text(words[i],windowWidth*0.1+x0,160+y0);
-        x0+=textWidth(words[i]+' ');
-      }
-      else {
-        x0=0;
-        y0+=60;
-        text(words[i],windowWidth*0.1+x0,160+y0);
-        x0+=textWidth(words[i]+' ');
-      }
-    }
+    noStroke();
+    let x0=10;
+    let y0=0;
+    let tempId=0;
+    let words=null;
+    let tempFocus;
+    let tempPlayerIndex;
+    let boolPostItToRemove=(arrache_me_senpai.length==0)
+    textFont(fontRockSalt,20);
+    textAlign(LEFT, TOP)
+    //je peux mettre un font ici
+    fill(0);
+    while (filteredList[currentSelect][1].slice(tempId).search(/\[/)!=-1){
+        words = filteredList[currentSelect][1].slice(tempId,tempId+filteredList[currentSelect][1].slice(tempId).search(/\[/)).split(' ');
+        for (let i=0;i<words.length;i++){
+            if (x0+textWidth(words[i]+' ')>=width/2){
+                x0=10;
+                y0+=60;
+            }
+            text(words[i],width/4+x0,160+y0);
+            x0+=textWidth(words[i]+' ');
+        }
 
-    tempId+=filteredList[currentSelect][1].slice(tempId).search(/\[/)+1;
-    tempFocus=filteredList[currentSelect][1].slice(tempId).split(/\]/)[0];
-	tempPlayerIndex=parseInt(tempFocus.split('|')[0])-1;
-	words = tempFocus.split('|')[1].split(' ');
-	colorMode(HSB);
-	fill(color((360*tempPlayerIndex*(Math.sqrt(5)/2-0.5))%360, 100, 100));
-	colorMode(RGB);
+        tempId+=filteredList[currentSelect][1].slice(tempId).search(/\[/)+1;
+        tempFocus=filteredList[currentSelect][1].slice(tempId).split(/\]/)[0];
+        tempPlayerIndex=parseInt(tempFocus.split('|')[0])-1;
+        words = tempFocus.split('|')[1].split(' ');
 
-	for (let i=0;i<words.length;i++){
-		if (x0+textWidth(words[i]+' ')<windowWidth*0.6){
-		  text(words[i],windowWidth*0.1+x0,160+y0);
-		  x0+=textWidth(words[i]+' ');
-		}
-		else {
-		  x0=0;
-		  y0+=60;
-		  text(words[i],windowWidth*0.1+x0,160+y0);
-		  x0+=textWidth(words[i]+' ');
-		}
-	}
-	tempId+=filteredList[currentSelect][1].slice(tempId).search(/\]/)+1;
+        for (let i=0;i<words.length;i++){
+            if (x0+textWidth(words[i]+' ')>=width/2){
+                x0=10;
+                y0+=60;
+            }
+            if (boolPostItToRemove){
+                colorMode(HSB);
+                arrache_me_senpai.push(new PostIt(width/4+x0+textWidth(words[i])/2,180+y0, textWidth(words[i])+4, 44, "", ()=>{}, color(360*tempPlayerIndex*(Math.sqrt(5)/2-0.5)%360,75,100), color(360*tempPlayerIndex*(Math.sqrt(5)/2-0.5)%360,75,100), color(360*tempPlayerIndex*(Math.sqrt(5)/2-0.5)%360,75,100), "Courier New"))
+                colorMode(RGB);
+            }
+            text(words[i],width/4+x0,160+y0);
+            x0+=textWidth(words[i]+' ');
+        }
+        tempId+=filteredList[currentSelect][1].slice(tempId).search(/\]/)+1;
     
-  }
-  //Il devrait rester encore une section blanche qui manque après
+    }
+    //Il devrait rester encore une section blanche qui manque après
 }
 
 function showPrompt(){
-  noStroke();
-	let x0=0;
-  let y0=0;
-	let tempId=0;
-  let words=null;
-  let tempFocus;
-  let tempPlayerIndex;
-  textFont('Verdana',40);
-  //je peux mettre un font ici
-  while (filteredList[currentSelect][0].slice(tempId).search(/\[|\(/)!=-1){
-    words = filteredList[currentSelect][0].slice(tempId,tempId+filteredList[currentSelect][0].slice(tempId).search(/\[|\(/)).split(' ');
-    fill(255,255,255);
-    for (let i=0;i<words.length;i++){
-      if (x0+textWidth(words[i]+' ')<windowWidth*0.6){
-        text(words[i],windowWidth*0.1+x0,160+y0);
-        x0+=textWidth(words[i]+' ');
-      }
-      else {
-        x0=0;
-        y0+=60;
-        text(words[i],windowWidth*0.1+x0,160+y0);
-        x0+=textWidth(words[i]+' ');
-      }
-    }
-
-    tempId+=filteredList[currentSelect][0].slice(tempId).search(/\[|\(/)+1;
-    if (filteredList[currentSelect][0][tempId-1]=='('){
-      tempFocus=filteredList[currentSelect][0].slice(tempId).split(/\)/)[0];
-      tempPlayerIndex=parseInt(filteredList[currentSelect][0]
-        .split("|"+tempFocus+"]")[0]
-        .split('[')[filteredList[currentSelect][0].split("|"+tempFocus+"]")[0].split('[').length-1]
-        .split('|')[0])-1;
-      try{
-		words = game.players[game.currentPlayers[(indexPlayer+tempPlayerIndex)%game.currentPlayers.length]]
-                    .currentGame[currentSelect][tempFocus]
-                      .split(' ');
-      }catch(erreur){words=["[REDACTED]"]}
-		
-      fill(game.players[game.currentPlayers[(indexPlayer+tempPlayerIndex)%game.currentPlayers.length]].color)
-
-      for (let i=0;i<words.length;i++){
-        if (x0+textWidth(words[i]+' ')<windowWidth*0.6){
-          text(words[i],windowWidth*0.1+x0,160+y0);
-          x0+=textWidth(words[i]+' ');
+    noStroke();
+	let x0=10;
+    let y0=0;
+    let tempId=0;
+    let words=null;
+    let tempFocus;
+    let tempPlayerIndex;
+    let boolPostItToRemove=(arrache_me_senpai.length==0)
+    fill(0);
+    textAlign(LEFT, TOP)
+    
+	textFont(fontCaveat,100);
+	text("Biggest Losers !", width*3/4+10, 100);
+    
+	textFont(fontRockSalt,20);
+    //je peux mettre un font ici
+    while (filteredList[currentSelect][0].slice(tempId).search(/\[/)!=-1){
+        words = filteredList[currentSelect][0].slice(tempId,tempId+filteredList[currentSelect][0].slice(tempId).search(/\[|\(/)).split(' ');
+        for (let i=0;i<words.length;i++){
+            if (x0+textWidth(words[i]+' ')>=width/2){
+                x0=10;
+                y0+=60;
+            }
+            text(words[i],width/4+x0,160+y0);
+            x0+=textWidth(words[i]+' ');
         }
-        else {
-          x0=0;
-          y0+=60;
-          text(words[i],windowWidth*0.1+x0,160+y0);
-          x0+=textWidth(words[i]+' ');
-        }
-      }
-      tempId+=filteredList[currentSelect][0].slice(tempId).search(/\)/)+1;
-    }
-    else{
-      tempFocus=filteredList[currentSelect][0].slice(tempId).split(/\]/)[0];
-      tempPlayerIndex=parseInt(tempFocus.split('|')[0])-1;
-		try{
-			words = game.players[game.currentPlayers[(indexPlayer+tempPlayerIndex)%game.currentPlayers.length]]
+
+        tempId+=filteredList[currentSelect][0].slice(tempId).search(/\[/)+1;
+        tempFocus=filteredList[currentSelect][0].slice(tempId).split(/\]/)[0];
+        tempPlayerIndex=parseInt(tempFocus.split('|')[0])-1;
+        try{
+            words = game.players[game.currentPlayers[(indexPlayer+tempPlayerIndex)%game.currentPlayers.length]]
                     .currentGame[currentSelect][tempPlayerIndex+1]
                       .split(' ');
-		}catch(erreur){words=["[REDACTED]"]}
-      fill(game.players[game.currentPlayers[(indexPlayer+tempPlayerIndex)%game.currentPlayers.length]].color)
+        }catch(erreur){words=["[REDACTED]"]}
+        //fill(game.players[game.currentPlayers[(indexPlayer+tempPlayerIndex)%game.currentPlayers.length]].color)
 
-      for (let i=0;i<words.length;i++){
-        if (x0+textWidth(words[i]+' ')<windowWidth*0.6){
-          text(words[i],windowWidth*0.1+x0,160+y0);
-          x0+=textWidth(words[i]+' ');
+        for (let i=0;i<words.length;i++){
+            if (x0+textWidth(words[i]+' ')>=width/2){
+                x0=10;
+                y0+=60;
+            }
+            if (boolPostItToRemove){
+                colorMode(HSB);
+                arrache_me_senpai.push(new PostIt(width/4+x0+textWidth(words[i])/2,180+y0, textWidth(words[i])+4, 44, "", ()=>{}, color(360*tempPlayerIndex*(Math.sqrt(5)/2-0.5)%360,75,100), color(360*tempPlayerIndex*(Math.sqrt(5)/2-0.5)%360,75,100), color(360*tempPlayerIndex*(Math.sqrt(5)/2-0.5)%360,75,100), "Courier New"))
+                colorMode(RGB);
+            }
+            text(words[i],width/4+x0,160+y0);
+            x0+=textWidth(words[i]+' ');
         }
-        else {
-          x0=0;
-          y0+=60;
-          text(words[i],windowWidth*0.1+x0,160+y0);
-          x0+=textWidth(words[i]+' ');
+        if (boolPostItToRemove){
+            colorMode(HSB);
+            arrache_me_senpai.push(
+                new PostIt(width*7/8+textWidth(
+                    game.players[game.currentPlayers[(indexPlayer+tempPlayerIndex)%game.currentPlayers.length]].displayName
+                )/2,180+60*tempPlayerIndex, textWidth(
+                    game.players[game.currentPlayers[(indexPlayer+tempPlayerIndex)%game.currentPlayers.length]].displayName
+                )+4, 44, 
+                    game.players[game.currentPlayers[(indexPlayer+tempPlayerIndex)%game.currentPlayers.length]].displayName
+                , ()=>{}, 
+                color(360*tempPlayerIndex*(Math.sqrt(5)/2-0.5)%360,75,100), 
+                color(360*tempPlayerIndex*(Math.sqrt(5)/2-0.5)%360,75,100), 
+                color(360*tempPlayerIndex*(Math.sqrt(5)/2-0.5)%360,75,100), fontRockSalt))
+            colorMode(RGB);
         }
-      }
-      tempId+=filteredList[currentSelect][0].slice(tempId).search(/\]/)+1;
+        tempId+=filteredList[currentSelect][0].slice(tempId).search(/\]/)+1;
     }
-    
-  }
-  //Il devrait rester encore une section blanche qui manque après
+    //Il devrait rester encore une section blanche qui manque après
+}
+
+function arrache(){
+    for (var idx=0; idx<arrache_me_senpai.length; idx++){
+        arrache_me_senpai[idx].throwAway()
+        delete arrache_me_senpai[idx]
+    }
+    arrache_me_senpai=[]
 }
 
 function onClientConnect (data) {
@@ -564,8 +555,8 @@ function processButton (data) {
 		  }
 		}
 		if (statusReady && activePlayCount>0){
-		  gameState += 1;
-			  
+            gameState += 1;
+			arrache()
 			soundEffNext.play();
 			soundEffNext.setLoop(false);
 			
@@ -581,9 +572,8 @@ function processButton (data) {
 		  
 		  if (prompteur[gameState]){
 			let data = {
-			  button: button.val,
+			  button: 1,
 			  prompt: prompteur[gameState][0],
-			  addition: prompteur[gameState][1],
 			  exemple: filteredList[currentSelect][1],
 			  exID: gameState
 			}
@@ -592,7 +582,7 @@ function processButton (data) {
 		  else {
 			gameState=-2
 			indexPlayer=-1
-			
+			arrache()
 			for (let indexx=0; indexx<game.currentPlayers.length; indexx++){
 				if (game.players[game.currentPlayers[indexx]].disconnected){
 					game.currentPlayers.splice(indexx);
@@ -603,14 +593,12 @@ function processButton (data) {
 			backgroundMusicGame.setVolume(0);
 			backgroundMusicReview.setVolume(0.1*musicVal);
 			
-			button.onPress=reviewContinue;
-
-			button.label="Next"
-			button.setStyle({
-			fillBg: color(130, 210, 100),
-			fillBgHover: color(100, 220, 100),
-			fillBgActive: color(70, 150, 70)
-		  });
+			buttonHost.func=reviewContinue;
+			buttonHost.hiddenStatus=false;
+			buttonHost.content="Next";
+            buttonSave.hiddenStatus=false;
+            bgCdvr.throwStay();
+            bgOther.hiddenStatus=false;
 		  }
 		}
 	  }
@@ -636,7 +624,6 @@ function processButton (data) {
 			  pseudo: data.contenu,
 			  testValue: 2,
 			  prompt: prompteur[gameState][0],
-			  addition: prompteur[gameState][1],
 			  couleur: game.players[data.id].color,
 			  exemple: filteredList[currentSelect][1],
 			  exID: gameState
@@ -652,16 +639,15 @@ function processButton (data) {
 		for (let id in game.players) {
 		  if (!game.players[id].status && !game.players[id].disconnected){statusReady = false}}
 		if (statusReady){
-		  gameState += 1;
-			  
+            gameState += 1;
+            arrache()
 			soundEffNext.play();
 			soundEffNext.setLoop(false);
 
 		  if (prompteur[gameState]){
 			let data = {
-			  button: button.val,
+			  button: 1,
 			  prompt: prompteur[gameState][0],
-			  addition: prompteur[gameState][1],
 			  exemple: filteredList[currentSelect][1],
 			  exID: gameState
 			}
@@ -670,7 +656,7 @@ function processButton (data) {
 		  else {
 			gameState=-2
 			indexPlayer=-1
-			
+			arrache()
 			for (let indexx=0; indexx<game.currentPlayers.length; indexx++){
 				if (game.players[game.currentPlayers[indexx]].disconnected){
 					game.currentPlayers.splice(indexx);
@@ -681,14 +667,12 @@ function processButton (data) {
 			backgroundMusicGame.setVolume(0);
 			backgroundMusicReview.setVolume(0.1*musicVal);
 			
-			button.onPress=reviewContinue;
-
-			button.label="Next"
-			button.setStyle({
-			fillBg: color(130, 210, 100),
-			fillBgHover: color(100, 220, 100),
-			fillBgActive: color(70, 150, 70)
-		  });
+			buttonHost.func=reviewContinue;
+			buttonHost.hiddenStatus=false;
+			buttonHost.content="Next"
+            buttonSave.hiddenStatus=false;
+            bgCdvr.throwStay();
+            bgOther.throwStay();
 		  }
 		}
 	  }
@@ -713,6 +697,93 @@ function processTxt (data) {
       
     }  
   }
+}
+
+////////////
+// Boulette
+class Boulette {
+	constructor(posX, posY, col, size){
+		this.strength=Math.random()*50;
+		this.angle=Math.random()*2*Math.PI;
+		this.spin=Math.random()*2-1;
+		this.life=0
+		this.x=posX
+		this.y=posY
+		this.size=size
+		
+		this.draw=()=>{
+			if (col!='None'){
+				tint(col)
+			}
+			translate(this.x,this.y)
+			rotate(this.life*this.spin)
+			image(imgBoulette,-this.size/2, -this.size/2, this.size, this.size)
+			noTint()
+			rotate(-this.life*this.spin)
+			translate(-this.x,-this.y)
+			this.x+=this.strength*Math.cos(this.angle)
+			this.y+=this.strength*Math.sin(this.angle)+this.life*2
+            this.life++
+		}
+		
+		mesBoulettes.push(this)
+	}
+}
+
+
+////////////
+// ButtonPostIt
+class PostIt {
+	constructor (posX, posY, Width, Height, Content, Function, TintValue, PressTintValue, HoverTintValue, objFont){
+		this.obj = new Sprite(posX, posY, Width, Height) 
+		this.obj.layer=0
+		this.content = Content;
+		this.func = Function;
+		this.hiddenStatus=false;
+		this.tint= TintValue;
+		this.pressTint= PressTintValue
+		this.hoverTint= HoverTintValue
+        this.imgToDraw=(Width*Height<128*128*1.5?imgButtonLowRes:imgButton)
+		this.obj.draw= ()=>{
+			if (this.hiddenStatus){return true;}
+			if (this.pressTint!='None' && this.obj.mouseIsPressed){
+				tint(this.pressTint)
+			}
+			else{
+				if (this.hoverTint!='None' && this.obj.mouseIsOver){
+					tint(this.hoverTint)
+				}
+				else{
+					if (this.tint!='None'){
+						tint(this.tint)
+					}
+				}
+			}
+			image(this.imgToDraw,this.obj.position.x-this.obj.width/2, this.obj.position.y-this.obj.height/2, this.obj.width, this.obj.height)
+			noTint();
+			textFont(objFont,30);
+			textAlign(CENTER, CENTER)
+			fill(0);
+			text(this.content,this.obj.position.x-this.obj.width/2, this.obj.position.y-this.obj.height/2, this.obj.width, this.obj.height)
+			
+		}
+		this.obj.setCollider('rectangle')
+		this.obj.onMouseReleased=()=>{if (!this.hiddenStatus){this.func()}}
+	}
+	
+	update(){
+		this.obj.update()
+		this.obj.draw()
+		//this.obj.display()
+	}
+	
+	throwStay(){
+		new Boulette(this.obj.position.x,this.obj.position.y, this.tint, Math.sqrt(Math.sqrt(this.obj.height*this.obj.width))*10)
+	}
+	throwAway(){
+		this.hiddenStatus=true;
+		this.throwStay();
+	}
 }
 
 ////////////
@@ -792,31 +863,45 @@ class Game {
       else { return false; }
   }
 
-  printPlayerIds (x, y) {
-      push();
-          noStroke();
-          fill(255);
-          textSize(16);
-          text("# players: " + this.numPlayers, x, y);
-
-          y = y + 16;
-          for (let id in this.players) {
-            fill(200);
-            let charVal="[X] "
-            if (this.players[id].status){
-              fill(this.players[id].color);
-              charVal="[V] "
+    printPlayerIds (x, y) {
+        push();
+        noStroke();
+        fill(0);
+        textFont(fontRockSalt,32);
+        textAlign(LEFT, TOP)
+        text("LOSERS", x, y);
+        y = y + 64;
+        textFont(fontRockSalt,16);
+        let charVar=""
+        let iLength;
+        for (let id in this.players) {
+            if (!this.players[id].status){
+                charVar=this.players[id].displayName
+                if (this.players[id].disconnected){
+                    charVar+=" (disconnected)";  
+                }
+                for (iLength = 0; textWidth(charVar.slice(0,iLength))<width/4 && iLength<charVar.length+1; iLength++){}
+                text(charVar.slice(0,iLength-1), x, y);
+                y += 32;
             }
-              if (this.players[id].disconnected){
-				text(charVal+this.players[id].displayName+" (disconnected)", x, y);  
-			  }
-			  else{
-				  text(charVal+this.players[id].displayName, x, y);
-			  }
-              y += 16;
-          }
-
-      pop();
-  }
+        }
+        y = y + 32;
+        textFont(fontRockSalt,32);
+        text("WINNERS", x, y);
+        y = y + 64;
+        textFont(fontRockSalt,16);
+        for (let id in this.players) {
+            if (this.players[id].status){
+                charVar=this.players[id].displayName
+                if (this.players[id].disconnected){
+                    charVar+=" (disconnected)";  
+                }
+                for (iLength = 0; textWidth(charVar.slice(0,iLength))<width/4 && iLength<charVar.length+1; iLength++){}
+                text(charVar.slice(0,iLength-1), x, y);
+                y += 32;
+            }
+        }
+        pop();
+    }
 
 }

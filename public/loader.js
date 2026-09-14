@@ -123,5 +123,15 @@ const LOADER = [
 	[
 	  "Je pars en vacances[1|Donne un lieu|], pour cela j'emporte avec moi[2|Donne un 1er objet|],[3|Donne un 2eme objet|],[4|Donne un 3eme objet|],[5|Donne un 4eme objet|],[6|Donne un 5eme objet|],[7|Donne un 6eme objet|],[8|Donne un 7eme objet|],[9|Donne un 8eme objet|],[10|Donne un 9eme objet|]",
 	  "Je pars en vacances[1|au fond de la fosse des Mariannes], pour cela j'emporte avec moi[2|un aspirateur],[3|une chaussette seule],[4|un épouventail],[5|un dictionnaire de Français],[6|une tonne d'eau],[7|les larmes de mes ennemis],[8|une autre chaussette seule],[9|la créativité dont je manque cruellement],[10|le racisme de mon cousin]"
-	]]
+	]],
+    ["FR", 4,-1, "Fursona",
+    [
+        "Ton fursona c'est un[1|Donne une espèce|][2|Donne une couleur], iel s'appelle[3|Nomme ce fursona], mais[4|Ecrit ce que tu veux qui peut être arrivé au fursona]",
+        "Ton fursona c'est un[1|hybride loup-serpent|][2|bleu Royal], iel s'appelle[3|ATCHOU%], mais[4|iel est allergique à ses propres poils]",
+    ]],
+    ["FR", 3,3, "Fursona",
+    [
+        "Ton fursona c'est un[1|Donne une espèce|][2|Donne une couleur], mais[3|Ecrit ce que tu veux qui peut être arrivé au fursona]",
+        "Ton fursona c'est un[1|hybride loup-serpent|][2|bleu Royal], mais[3|iel est allergique à ses propres poils]",
+    ]]
 ];
