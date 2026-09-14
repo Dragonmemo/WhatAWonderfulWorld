@@ -498,6 +498,7 @@ function showPrompt(){
 function arrache(){
     for (var idx=0; idx<arrache_me_senpai.length; idx++){
         arrache_me_senpai[idx].throwAway()
+        arrache_me_senpai[idx].obj.remove()
         delete arrache_me_senpai[idx]
     }
     arrache_me_senpai=[]
