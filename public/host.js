@@ -79,7 +79,7 @@ function preload() {
   imgBoulette=loadImage("/images/Paper.png")
   displayQR("QRDrop");
   fontCaveat=loadFont("/images/Caveat-Regular.ttf")
-  fontRockSalt=loadFont("/images/RockSalt-Regular.ttf")
+  fontRockSalt=loadFont("/images/MountainsofChristmas-Regular.ttf")
 }
 
 function setup () {
@@ -102,15 +102,15 @@ function setup () {
 	soundEffWriting.setVolume(0.7);
 	userStartAudio();
   
-  buttonLang = new PostIt(width-460, 60, 100, 100, lang, nextLang, 'rgb(255,255,200)', 'rgb(75,75,50)', 'rgb(175,175,135)', fontRockSalt)
-  buttonMusic = new PostIt(width-60, height-60, 100, 100, "🎵", changeMusic, 'None', 'rgb(75,75,75)', 'rgb(175,175,175)', "Courier New")
-  buttonLevel = new PostIt(width-210, 60, 400, 100, currentSelect, nextLevel, 'None', 'rgb(75,75,75)', 'rgb(175,175,175)', fontRockSalt)
-  buttonNewLevel = new PostIt(width-210, 160, 400, 100, "Custom prompt", customLevel, 'None', 'rgb(75,75,75)', 'rgb(175,175,175)', fontRockSalt)
-  buttonHost = new PostIt(width/2, height-60, 400, 100, "Start", onButtonHostPress, 'rgb(120,255,175)', 'rgb(60,127,87)', 'rgb(95,175,135)', fontRockSalt)
-  buttonSave = new PostIt(width-160,height-60,100,100,"📸",()=>{capture=true},'None', 'rgb(75,75,75)', 'rgb(175,175,175)',"Courier New")
+  buttonLang = new PostIt(width-460, 60, 100, 100, lang, nextLang, 'rgb(255,255,200)', 'rgb(75,75,50)', 'rgb(175,175,135)', fontRockSalt, 30)
+  buttonMusic = new PostIt(width-60, height-60, 100, 100, "🎵", changeMusic, 'None', 'rgb(75,75,75)', 'rgb(175,175,175)', "Courier New", 30)
+  buttonLevel = new PostIt(width-210, 60, 400, 100, currentSelect, nextLevel, 'None', 'rgb(75,75,75)', 'rgb(175,175,175)', fontRockSalt, 30)
+  buttonNewLevel = new PostIt(width-210, 160, 400, 100, "Custom prompt", customLevel, 'None', 'rgb(75,75,75)', 'rgb(175,175,175)', fontRockSalt, 30)
+  buttonHost = new PostIt(width/2, height-60, 400, 100, "Start", onButtonHostPress, 'rgb(120,255,175)', 'rgb(60,127,87)', 'rgb(95,175,135)', fontRockSalt, 30)
+  buttonSave = new PostIt(width-160,height-60,100,100,"📸",()=>{capture=true},'None', 'rgb(75,75,75)', 'rgb(175,175,175)',"Courier New", 30)
   buttonSave.hiddenStatus=true;
-  bgCdvr= new PostIt(width/2, height*5/12, width/2, height*5/6, "", ()=>{}, 'None', 'None', 'None', "Courier New")
-  bgOther= new PostIt(width*7/8, height*5/12, width/4, height*5/6, "", ()=>{}, 'None', 'None', 'None', fontRockSalt)
+  bgCdvr= new PostIt(width/2, height*5/12, width/2, height*5/6, "", ()=>{}, 'None', 'None', 'None', "Courier New", 30)
+  bgOther= new PostIt(width*7/8, height*5/12, width/4, height*5/6, "", ()=>{}, 'None', 'None', 'None', fontRockSalt, 30)
   bgOther.hiddenStatus=true;
   // <----
 }
@@ -303,6 +303,7 @@ function draw () {
     // <----
     
     // Display server address
+    
     for (var idx = 0; idx< arrache_me_senpai.length; idx++){
         arrache_me_senpai[idx].update();
     }
@@ -334,6 +335,7 @@ function printExample(strKey,id){
 	let x0=10;
 	let y0=0;
 	let tempId=0;
+    let TempWords="";
 	let words=null;
     let boolPostItToRemove=(arrache_me_senpai.length==0)
 	fill(0);        
@@ -347,30 +349,39 @@ function printExample(strKey,id){
     words = filteredList[strKey][1].slice(tempId,tempId+filteredList[strKey][1].slice(tempId).search(/\[/)).split(' ');
     fill(0);
     for (let i=0;i<words.length;i++){
-        if (x0+textWidth(words[i]+' ')>=width/2){
+        if (x0+textWidth(TempWords+words[i]+' ')>=width/2){
+            text(TempWords,width/4+x0,160+y0);
+            TempWords="";
             x0=10;
             y0+=60;
         }
-        text(words[i],width/4+x0,160+y0);
-        x0+=textWidth(words[i]+' ');
+        TempWords+=words[i]+" ";
     }
+    text(TempWords,width/4+x0,160+y0);
+    x0+=textWidth(TempWords+' ');
+    TempWords="";
 
     tempId+=filteredList[strKey][1].slice(tempId).search(/\[/)+1;
     let tempFocus=filteredList[strKey][1].slice(tempId).split(/\]/)[0];
     //Jai la section de texte dans tempFocus[1] et son ID en 0
     words = tempFocus.split('|')[1].split(' ');
     for (let i=0;i<words.length;i++){
-        if (x0+textWidth(words[i]+' ')>=width/2){
+        if (x0+textWidth(TempWords+words[i]+' ')>=width/2){
+            if (boolPostItToRemove && tempFocus.split('|')[0]==String(id)){
+                arrache_me_senpai.push(new PostIt(width/4+x0+textWidth(TempWords)/2,180+y0, textWidth(TempWords)+4, 44, TempWords, ()=>{}, 'rgb(255,225,225)', 'rgb(255,225,225)', 'rgb(255,225,225)', fontRockSalt, 20))
+            }
             x0=10;
             y0+=60;
+            TempWords="";
         }
-        if (boolPostItToRemove && tempFocus.split('|')[0]==String(id)){
-            arrache_me_senpai.push(new PostIt(width/4+x0+textWidth(words[i])/2,180+y0, textWidth(words[i])+4, 44, "", ()=>{}, 'rgb(255,175,175)', 'rgb(255,175,175)', 'rgb(255,175,175)', "Courier New"))
-        }
-        text(words[i],width/4+x0,160+y0);
-        x0+=textWidth(words[i]+' ');
+        TempWords+=words[i]+" ";
+    }
+    if (boolPostItToRemove && tempFocus.split('|')[0]==String(id)){
+        arrache_me_senpai.push(new PostIt(width/4+x0+textWidth(TempWords)/2,180+y0, textWidth(TempWords)+4, 44, TempWords, ()=>{}, 'rgb(255,225,225)', 'rgb(255,225,225)', 'rgb(255,225,225)', fontRockSalt, 20))
     }
     tempId+=filteredList[strKey][1].slice(tempId).search(/\]/)+1;
+    x0+=textWidth(TempWords+' ');
+    TempWords="";
     
   }
   //Il devrait rester encore une section blanche qui manque après
@@ -382,6 +393,7 @@ function showExample(){
     let y0=0;
     let tempId=0;
     let words=null;
+    let TempWords="";
     let tempFocus;
     let tempPlayerIndex;
     let boolPostItToRemove=(arrache_me_senpai.length==0)
@@ -392,13 +404,17 @@ function showExample(){
     while (filteredList[currentSelect][1].slice(tempId).search(/\[/)!=-1){
         words = filteredList[currentSelect][1].slice(tempId,tempId+filteredList[currentSelect][1].slice(tempId).search(/\[/)).split(' ');
         for (let i=0;i<words.length;i++){
-            if (x0+textWidth(words[i]+' ')>=width/2){
+            if (x0+textWidth(TempWords+words[i]+' ')>=width/2){
+                text(TempWords,width/4+x0,160+y0);
+                TempWords="";
                 x0=10;
                 y0+=60;
             }
-            text(words[i],width/4+x0,160+y0);
-            x0+=textWidth(words[i]+' ');
+            TempWords+=words[i]+" ";
         }
+        text(TempWords,width/4+x0,160+y0);
+        x0+=textWidth(TempWords+' ');
+        TempWords="";
 
         tempId+=filteredList[currentSelect][1].slice(tempId).search(/\[/)+1;
         tempFocus=filteredList[currentSelect][1].slice(tempId).split(/\]/)[0];
@@ -406,19 +422,33 @@ function showExample(){
         words = tempFocus.split('|')[1].split(' ');
 
         for (let i=0;i<words.length;i++){
-            if (x0+textWidth(words[i]+' ')>=width/2){
+            if (x0+textWidth(TempWords+words[i]+' ')>=width/2){
+                if (boolPostItToRemove){
+                colorMode(HSB);
+                arrache_me_senpai.push(new PostIt(width/4+x0+textWidth(TempWords)/2,180+y0, textWidth(TempWords)+4, 44, TempWords, ()=>{}, 
+                    color(360*tempPlayerIndex*(Math.sqrt(5)/2-0.5)%360,33,100), 
+                    color(360*tempPlayerIndex*(Math.sqrt(5)/2-0.5)%360,33,100), 
+                    color(360*tempPlayerIndex*(Math.sqrt(5)/2-0.5)%360,33,100), fontRockSalt, 20))
+                colorMode(RGB);
+                }
+                TempWords="";
                 x0=10;
                 y0+=60;
             }
-            if (boolPostItToRemove){
-                colorMode(HSB);
-                arrache_me_senpai.push(new PostIt(width/4+x0+textWidth(words[i])/2,180+y0, textWidth(words[i])+4, 44, "", ()=>{}, color(360*tempPlayerIndex*(Math.sqrt(5)/2-0.5)%360,75,100), color(360*tempPlayerIndex*(Math.sqrt(5)/2-0.5)%360,75,100), color(360*tempPlayerIndex*(Math.sqrt(5)/2-0.5)%360,75,100), "Courier New"))
-                colorMode(RGB);
-            }
-            text(words[i],width/4+x0,160+y0);
-            x0+=textWidth(words[i]+' ');
+            TempWords+=words[i]+" ";
+        }
+        if (boolPostItToRemove){
+            colorMode(HSB);
+            arrache_me_senpai.push(new PostIt(width/4+x0+textWidth(TempWords)/2,180+y0, textWidth(TempWords)+4, 44, TempWords, ()=>{}, 
+                color(360*tempPlayerIndex*(Math.sqrt(5)/2-0.5)%360,33,100), 
+                color(360*tempPlayerIndex*(Math.sqrt(5)/2-0.5)%360,33,100), 
+                color(360*tempPlayerIndex*(Math.sqrt(5)/2-0.5)%360,33,100), fontRockSalt, 20))
+            colorMode(RGB);
         }
         tempId+=filteredList[currentSelect][1].slice(tempId).search(/\]/)+1;
+        x0+=textWidth(TempWords+' ');
+        TempWords="";
+
     
     }
     //Il devrait rester encore une section blanche qui manque après
@@ -430,6 +460,7 @@ function showPrompt(){
     let y0=0;
     let tempId=0;
     let words=null;
+    let TempWords="";
     let tempFocus;
     let tempPlayerIndex;
     let boolPostItToRemove=(arrache_me_senpai.length==0)
@@ -444,14 +475,18 @@ function showPrompt(){
     while (filteredList[currentSelect][0].slice(tempId).search(/\[/)!=-1){
         words = filteredList[currentSelect][0].slice(tempId,tempId+filteredList[currentSelect][0].slice(tempId).search(/\[|\(/)).split(' ');
         for (let i=0;i<words.length;i++){
-            if (x0+textWidth(words[i]+' ')>=width/2){
+            if (x0+textWidth(TempWords+words[i]+' ')>=width/2){
+                text(TempWords,width/4+x0,160+y0);
+                TempWords="";
                 x0=10;
                 y0+=60;
             }
-            text(words[i],width/4+x0,160+y0);
-            x0+=textWidth(words[i]+' ');
+            TempWords+=words[i]+" ";
         }
-
+        text(TempWords,width/4+x0,160+y0);
+        x0+=textWidth(TempWords+' ');
+        TempWords="";
+        
         tempId+=filteredList[currentSelect][0].slice(tempId).search(/\[/)+1;
         tempFocus=filteredList[currentSelect][0].slice(tempId).split(/\]/)[0];
         tempPlayerIndex=parseInt(tempFocus.split('|')[0])-1;
@@ -459,22 +494,31 @@ function showPrompt(){
             words = game.players[game.currentPlayers[(indexPlayer+tempPlayerIndex)%game.currentPlayers.length]]
                     .currentGame[currentSelect][tempPlayerIndex+1]
                       .split(' ');
-        }catch(erreur){words=["[REDACTED]"]}
+        }catch(erreur){words=["[REDACTED]"]}//Ici je dois modif pour randomiser le résultat depuis la liste d'exemples
         //fill(game.players[game.currentPlayers[(indexPlayer+tempPlayerIndex)%game.currentPlayers.length]].color)
 
         for (let i=0;i<words.length;i++){
-            if (x0+textWidth(words[i]+' ')>=width/2){
+            if (x0+textWidth(TempWords+words[i]+' ')>=width/2){
+                if (boolPostItToRemove){
+                    colorMode(HSB);
+                    arrache_me_senpai.push(new PostIt(width/4+x0+textWidth(TempWords)/2,180+y0, textWidth(TempWords)+4, 44, TempWords, ()=>{}, color(360*tempPlayerIndex*(Math.sqrt(5)/2-0.5)%360,75,100), color(360*tempPlayerIndex*(Math.sqrt(5)/2-0.5)%360,75,100), color(360*tempPlayerIndex*(Math.sqrt(5)/2-0.5)%360,75,100), fontRockSalt, 20))
+                    colorMode(RGB);
+                }
+                text(TempWords,width/4+x0,160+y0);
                 x0=10;
                 y0+=60;
             }
-            if (boolPostItToRemove){
-                colorMode(HSB);
-                arrache_me_senpai.push(new PostIt(width/4+x0+textWidth(words[i])/2,180+y0, textWidth(words[i])+4, 44, "", ()=>{}, color(360*tempPlayerIndex*(Math.sqrt(5)/2-0.5)%360,75,100), color(360*tempPlayerIndex*(Math.sqrt(5)/2-0.5)%360,75,100), color(360*tempPlayerIndex*(Math.sqrt(5)/2-0.5)%360,75,100), "Courier New"))
-                colorMode(RGB);
-            }
-            text(words[i],width/4+x0,160+y0);
-            x0+=textWidth(words[i]+' ');
+            TempWords+=words[i]+" ";
         }
+        if (boolPostItToRemove){
+            colorMode(HSB);
+            arrache_me_senpai.push(new PostIt(width/4+x0+textWidth(TempWords)/2,180+y0, textWidth(TempWords)+4, 44, TempWords, ()=>{}, color(360*tempPlayerIndex*(Math.sqrt(5)/2-0.5)%360,75,100), color(360*tempPlayerIndex*(Math.sqrt(5)/2-0.5)%360,75,100), color(360*tempPlayerIndex*(Math.sqrt(5)/2-0.5)%360,75,100), fontRockSalt, 20))
+            colorMode(RGB);
+        }
+        text(TempWords,width/4+x0,160+y0);
+        x0+=textWidth(TempWords+' ');
+        TempWords="";
+        
         if (boolPostItToRemove){
             colorMode(HSB);
             arrache_me_senpai.push(
@@ -487,7 +531,7 @@ function showPrompt(){
                 , ()=>{}, 
                 color(360*tempPlayerIndex*(Math.sqrt(5)/2-0.5)%360,75,100), 
                 color(360*tempPlayerIndex*(Math.sqrt(5)/2-0.5)%360,75,100), 
-                color(360*tempPlayerIndex*(Math.sqrt(5)/2-0.5)%360,75,100), fontRockSalt))
+                color(360*tempPlayerIndex*(Math.sqrt(5)/2-0.5)%360,75,100), fontRockSalt, 20))
             colorMode(RGB);
         }
         tempId+=filteredList[currentSelect][0].slice(tempId).search(/\]/)+1;
@@ -739,10 +783,12 @@ class Boulette {
 ////////////
 // ButtonPostIt
 class PostIt {
-	constructor (posX, posY, Width, Height, Content, Function, TintValue, PressTintValue, HoverTintValue, objFont){
+	constructor (posX, posY, Width, Height, Content, Function, TintValue, PressTintValue, HoverTintValue, objFont, Size){
 		this.obj = new Sprite(posX, posY, Width, Height) 
 		this.obj.layer=0
 		this.content = Content;
+        this.myFont=objFont;
+        this.textSize=Size;
 		this.func = Function;
 		this.hiddenStatus=false;
 		this.tint= TintValue;
@@ -766,7 +812,7 @@ class PostIt {
 			}
 			image(this.imgToDraw,this.obj.position.x-this.obj.width/2, this.obj.position.y-this.obj.height/2, this.obj.width, this.obj.height)
 			noTint();
-			textFont(objFont,30);
+			textFont(this.myFont,this.textSize);
 			textAlign(CENTER, CENTER)
 			fill(0);
 			text(this.content,this.obj.position.x-this.obj.width/2, this.obj.position.y-this.obj.height/2, this.obj.width, this.obj.height)
